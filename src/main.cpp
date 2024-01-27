@@ -36,6 +36,7 @@ class $modify(MenuLayer) {
 			random_label = distr(gen);
 			onOpenRandom = true;
 		}
+
 		// random_label = 18;
 
 		auto label = CCLabelBMFont::create("", "goldFont.fnt");
@@ -108,16 +109,21 @@ class $modify(MenuLayer) {
 			label->setString("We are from Geometry Dash Ukraine...");
 			label->setScale(0.35f);
 			break;
+		case 19:
+			label->setString("muplan challenge...");
+			break;
+		case 20:
+			label->setString("Ho hey!");
+			break;
 		}
 
 		label->runAction(CCRepeatForever::create(CCSequence::create(
-			CCEaseOut::create(CCScaleTo::create(label->getScale(), label->getScale() + 0.05f), 0.6f),
-			CCEaseOut::create(CCScaleTo::create(label->getScale(), label->getScale()), 0.6f),
+			CCEaseOut::create(CCScaleTo::create(0.6f, label->getScale() + 0.05f), 0.6f),
+			CCEaseOut::create(CCScaleTo::create(0.6f, label->getScale()), 0.6f),
 			nullptr
 		)));
 
 		label->setID("minecraft-label");
-		// label->setPosition(posX, posY);
 		label->setPosition(posX, posY);
 		label->setRotation(-9.f);
 		
@@ -132,7 +138,6 @@ class $modify(PauseLayer) {
 		std::mt19937 gen(rd()); 
 		std::uniform_int_distribution<> distr(0, 18); 
 		random_label = distr(gen);
-
 		PauseLayer::onQuit(sender);
 	}
 };
