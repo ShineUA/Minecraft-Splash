@@ -32,7 +32,7 @@ class $modify(MenuLayer) {
 		if(!onOpenRandom) {
 			std::random_device rd; 
 			std::mt19937 gen(rd()); 
-			std::uniform_int_distribution<> distr(0, 18); 
+			std::uniform_int_distribution<> distr(0, 39); 
 			random_label = distr(gen);
 			onOpenRandom = true;
 		}
@@ -115,6 +115,64 @@ class $modify(MenuLayer) {
 		case 20:
 			label->setString("Ho hey!");
 			break;
+		case 21:
+			label->setString("Again? Really?");
+			break;
+		case 22:
+			label->setString("Continue?");
+			break;
+		case 23:
+			label->setString("GGWP");
+			break;
+		case 24:
+			label->setString("LOL");
+			break;
+		case 25:
+			label->setString("Take a break...");
+			break;
+		case 26:
+			label->setString("Not ok...");
+			break;
+		case 27:
+			label->setString("You ok?");
+			break;
+		case 28:
+			label->setString("BASED");
+			break;
+		case 29:
+			label->setString("el pepe");
+			break;
+		case 30:
+			label->setString("Harder than FNF");
+			break;
+		case 31:
+			label->setString("I am Batman");
+			break;
+		case 32:
+			label->setString("huhu yo");
+			break;
+		case 33:
+			label->setString("Kappa");
+			break;
+		case 34:
+			label->setString("pogchamp");
+			break;
+		case 35:
+			label->setString("Press alt + f4 for secret way");
+			label->setScale(0.45f);
+			break;
+		case 36:
+			label->setString("Take a break!");
+			break;
+		case 37:
+			label->setString("Time to go outside...");
+			break;
+		case 38:
+			label->setString("To be continued...");
+			break;
+		case 39:
+			label->setString("youre going to brazil");
+			break;
 		}
 
 		label->runAction(CCRepeatForever::create(CCSequence::create(
@@ -136,7 +194,7 @@ class $modify(PauseLayer) {
 	void onQuit(CCObject* sender) {
 		std::random_device rd; 
 		std::mt19937 gen(rd()); 
-		std::uniform_int_distribution<> distr(0, 18); 
+		std::uniform_int_distribution<> distr(0, 39); 
 		random_label = distr(gen);
 		PauseLayer::onQuit(sender);
 	}
