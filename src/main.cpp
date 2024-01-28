@@ -3,7 +3,15 @@
 #include <Geode/modify/PauseLayer.hpp>
 #include <Geode/cocos/actions/CCActionInterval.h>
 #include <random>
+#include <string>
+#include <cstring>
 
+
+
+// std::array<std::array<std::string, 2>, 2> default_splashes = {{
+// 	{"Also try minecraft...", "0.6"},
+// 	{"Also try terraria...", "0.6"}
+// }};
 
 bool onOpenRandom = false;
 int random_label;
@@ -14,34 +22,55 @@ class $modify(MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
 
-		auto winSize = CCDirector::get()->getWinSize();
-
-		auto posX = winSize.width / 2 + 183.f;
-		auto posY = winSize.height / 2 + 71.f;
-
-		auto density = winSize.width / winSize.height;
-
-		if(density < 1.7f && density >= 1.5f) {
-			posX = winSize.width / 2 + 154.f;
-			posY = winSize.height / 2 + 73.f;
-		} else if(density < 1.5f) {
-			posX = winSize.width / 2 + 132.f;
-			posY = winSize.height / 2 + 86.f;
-		}
+		auto main_title = this->getChildByID("main-title");
 
 		if(!onOpenRandom) {
 			std::random_device rd; 
 			std::mt19937 gen(rd()); 
-			std::uniform_int_distribution<> distr(0, 39); 
+			// std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
+			std::uniform_int_distribution<> distr(0, 39);
 			random_label = distr(gen);
 			onOpenRandom = true;
 		}
 
-		// random_label = 18;
+		// random_label = 1;
+
+		auto appearence_setting = Mod::get()->getSettingValue<bool>("appearance");
 
 		auto label = CCLabelBMFont::create("", "goldFont.fnt");
+		auto winSize = CCDirector::get()->getWinSize();
+		auto density = winSize.width / winSize.height;
+		float posX, posY;
 
-		label->setScale(0.6f);
+		if(appearence_setting){
+			posX = main_title->getPositionX() + 167.f;
+			posY = main_title->getPositionY() - 11.f;
+			label->setRotation(-15.f);
+		} else {
+			if(density < 1.7f && density >= 1.5f) {
+				posX = winSize.width / 2 + 154.f;
+				posY = winSize.height / 2 + 73.f;
+			} else if(density < 1.5f) {
+				posX = winSize.width / 2 + 132.f;
+				posY = winSize.height / 2 + 86.f;
+			} else {
+				posX = winSize.width / 2 + 183.f;
+				posY = winSize.height / 2 + 71.f;
+			}
+			label->setRotation(-9.f);
+		}
+		
+		// label->setScale(std::stof((default_splashes[0][1])));
+
+		// char* text = new char[default_splashes[random_label][0].size() + 1];
+
+		// std::strcpy(text, default_splashes[random_label][0].c_str());
+
+		// label->setString(text);
+
+		// delete[] text;
+
+		label->setScale(0.6);
 
 		switch (random_label)
 		{
@@ -181,9 +210,9 @@ class $modify(MenuLayer) {
 			nullptr
 		)));
 
+		label->setZOrder(3);
 		label->setID("minecraft-label");
 		label->setPosition(posX, posY);
-		label->setRotation(-9.f);
 		
 		this->addChild(label);
 		return true;
@@ -194,6 +223,7 @@ class $modify(PauseLayer) {
 	void onQuit(CCObject* sender) {
 		std::random_device rd; 
 		std::mt19937 gen(rd()); 
+		// std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
 		std::uniform_int_distribution<> distr(0, 39); 
 		random_label = distr(gen);
 		PauseLayer::onQuit(sender);
