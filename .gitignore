@@ -51,3 +51,9 @@
 
 # clangd
 .cache/
+
+# secret files
+src/*
+
+!src/main.cpp
+

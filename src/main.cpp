@@ -8,15 +8,54 @@
 
 
 
-// std::array<std::array<std::string, 2>, 2> default_splashes = {{
-// 	{"Also try minecraft...", "0.6"},
-// 	{"Also try terraria...", "0.6"}
-// }};
+std::array<std::array<std::string, 2>, 40> default_splashes = {{
+	{"Also try minecraft...", "0.6"},
+	{"Also try terraria...", "0.6"},
+	{"Go touch some grass...", "0.6"},
+	{"FIRE IN THE HOLE!!!!", "0.6"},
+	{"I'm verified THE GOLDEN LETS GO!", "0.35"},
+	{"Also try the impossible game...", "0.45"},
+	{"WATER ON THE HILL!!!", "0.6"},
+	{"Korivka top!","0.6"},
+	{"Chomu ne na fronti?", "0.6"},
+	{"jump on the spike to win...", "0.5"},
+	{"try Tidal wave if you're new...", "0.45"},
+	{"try Bloodbath if you're new...", "0.45"},
+	{"don't crash on 99%...", "0.6"},
+	{"lobotomy dash...", "0.6"},
+	{"also try star echo...", "0.6"},
+	{"RubRubRubRubRub", "0.6"},
+	{"There's nothing we can do...", "0.45"},
+	{"Vinovat neiron...", "0.6"},
+	{"We are from Geometry Dash Ukraine...", "0.35"},
+	{"muplan challenge...", "0.6"},
+	{"Ho hey!", "0.6"},
+	{"Again? Really?", "0.6"},
+	{"Continue?", "0.6"},
+	{"GGWP", "0.6"},
+	{"LOL", "0.6"},
+	{"Take a break...", "0.6"},
+	{"Not ok...", "0.6"},
+	{"You ok?", "0.6"},
+	{"BASED", "0.6"},
+	{"el pepe", "0.6"},
+	{"Harder than FNF", "0.6"},
+	{"I am Batman", "0.6"},
+	{"huhu yo", "0.6"},
+	{"Kappa", "0.6"},
+	{"pogchamp", "0.6"},
+	{"Press alt + f4 for secret way", "0.45"},
+	{"Take a break!", "0.6"},
+	{"Time to go outside...", "0.6"},
+	{"To be continued...", "0.6"},
+	{"youre going to brazil", "0.6"}
+}};
 
 bool onOpenRandom = false;
 int random_label;
 
 using namespace geode::prelude;
+
 
 class $modify(MenuLayer) {
 	bool init() {
@@ -27,13 +66,10 @@ class $modify(MenuLayer) {
 		if(!onOpenRandom) {
 			std::random_device rd; 
 			std::mt19937 gen(rd()); 
-			// std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
-			std::uniform_int_distribution<> distr(0, 39);
+			std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
 			random_label = distr(gen);
 			onOpenRandom = true;
 		}
-
-		// random_label = 1;
 
 		auto appearence_setting = Mod::get()->getSettingValue<bool>("appearance");
 
@@ -60,160 +96,32 @@ class $modify(MenuLayer) {
 			label->setRotation(-9.f);
 		}
 		
-		// label->setScale(std::stof((default_splashes[0][1])));
+		label->setScale(std::stof((default_splashes[random_label][1])));
 
-		// char* text = new char[default_splashes[random_label][0].size() + 1];
+		char* text = new char[default_splashes[random_label][0].size() + 1];
 
-		// std::strcpy(text, default_splashes[random_label][0].c_str());
+		std::strcpy(text, default_splashes[random_label][0].c_str());
 
-		// label->setString(text);
+		label->setString(text);
 
-		// delete[] text;
+		delete[] text;
 
-		label->setScale(0.6);
+		// label->setScale(0.6f);
 
-		switch (random_label)
-		{
-		case 0:
-			label->setString("Also try minecraft...");
-			break;
-		case 1:
-			label->setString("Also try terraria...");
-			break;
-		case 2:
-			label->setString("Go touch some grass...");
-			break;
-		case 3:
-			label->setString("FIRE IN THE HOLE!!!!");
-			break;
-		case 4:
-			label->setString("I'm verified THE GOLDEN LETS GO!");
-			label->setScale(0.35f);
-			break;
-		case 5:
-			label->setString("Also try the impossible game...");
-			label->setScale(0.45f);
-			break;
-		case 6:
-			label->setString("WATER ON THE HILL!!!");
-			break;
-		case 7:
-			label->setString("Korivka top!");
-			break;
-		case 8:
-			label->setString("Chomu ne na fronti?");
-			break;
-		case 9:
-			label->setString("jump on the spike to win...");
-			label->setScale(0.5f);
-			break;
-		case 10:
-			label->setString("try Tidal wave if you're new...");
-			label->setScale(0.45f);
-			break;
-		case 11:
-			label->setString("try Bloodbath if you're new...");
-			label->setScale(0.45f);
-			break;
-		case 12:
-			label->setString("don't crash on 99%...");
-			break;
-		case 13:
-			label->setString("lobotomy dash...");
-			break;
-		case 14:
-			label->setString("also try star echo...");
-			break;
-		case 15:
-			label->setString("RubRubRubRubRub");
-			break;
-		case 16:
-			label->setString("There's nothing we can do...");
-			label->setScale(0.45f);
-			break;
-		case 17:
-			label->setString("Vinovat neiron...");
-			break;
-		case 18:
-			label->setString("We are from Geometry Dash Ukraine...");
-			label->setScale(0.35f);
-			break;
-		case 19:
-			label->setString("muplan challenge...");
-			break;
-		case 20:
-			label->setString("Ho hey!");
-			break;
-		case 21:
-			label->setString("Again? Really?");
-			break;
-		case 22:
-			label->setString("Continue?");
-			break;
-		case 23:
-			label->setString("GGWP");
-			break;
-		case 24:
-			label->setString("LOL");
-			break;
-		case 25:
-			label->setString("Take a break...");
-			break;
-		case 26:
-			label->setString("Not ok...");
-			break;
-		case 27:
-			label->setString("You ok?");
-			break;
-		case 28:
-			label->setString("BASED");
-			break;
-		case 29:
-			label->setString("el pepe");
-			break;
-		case 30:
-			label->setString("Harder than FNF");
-			break;
-		case 31:
-			label->setString("I am Batman");
-			break;
-		case 32:
-			label->setString("huhu yo");
-			break;
-		case 33:
-			label->setString("Kappa");
-			break;
-		case 34:
-			label->setString("pogchamp");
-			break;
-		case 35:
-			label->setString("Press alt + f4 for secret way");
-			label->setScale(0.45f);
-			break;
-		case 36:
-			label->setString("Take a break!");
-			break;
-		case 37:
-			label->setString("Time to go outside...");
-			break;
-		case 38:
-			label->setString("To be continued...");
-			break;
-		case 39:
-			label->setString("youre going to brazil");
-			break;
-		}
+		auto animation_speed = Mod::get()->getSettingValue<double>("animation-speed");
 
 		label->runAction(CCRepeatForever::create(CCSequence::create(
-			CCEaseOut::create(CCScaleTo::create(0.6f, label->getScale() + 0.05f), 0.6f),
-			CCEaseOut::create(CCScaleTo::create(0.6f, label->getScale()), 0.6f),
+			CCEaseOut::create(CCScaleTo::create(animation_speed, label->getScale() + 0.05f), animation_speed),
+			CCEaseOut::create(CCScaleTo::create(animation_speed, label->getScale()), animation_speed),
 			nullptr
 		)));
 
 		label->setZOrder(3);
 		label->setID("minecraft-label");
 		label->setPosition(posX, posY);
-		
+
+		// Button & menu
+
 		this->addChild(label);
 		return true;
 	}
@@ -223,8 +131,7 @@ class $modify(PauseLayer) {
 	void onQuit(CCObject* sender) {
 		std::random_device rd; 
 		std::mt19937 gen(rd()); 
-		// std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
-		std::uniform_int_distribution<> distr(0, 39); 
+		std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
 		random_label = distr(gen);
 		PauseLayer::onQuit(sender);
 	}
