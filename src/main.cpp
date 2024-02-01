@@ -1,3 +1,5 @@
+#include "main.h"
+
 #include <Geode/Geode.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
@@ -5,6 +7,9 @@
 #include <random>
 #include <string>
 #include <cstring>
+#include <Geode/cocos/base_nodes/Layout.hpp>
+#include <Geode/binding/FLAlertLayerProtocol.hpp>
+#include "layers/SettingsLayer.h"
 
 
 
@@ -51,29 +56,54 @@ std::array<std::array<std::string, 2>, 40> default_splashes = {{
 	{"youre going to brazil", "0.6"}
 }};
 
+int random_splash;
+
 bool onOpenRandom = false;
-int random_label;
 
 using namespace geode::prelude;
 
 
-class $modify(MenuLayer) {
+class $modify(MSMenuLayer, MenuLayer) {
+
+	void onSettingsLayer(CCObject* sender){
+		auto settingsLayer = SettingsLayer::create();
+		auto settingsLayerBG = SettingsLayerBG::create();
+		settingsLayerBG->addChild(settingsLayer);
+		CCScene::get()->addChild(settingsLayerBG);
+	}
+
 	bool init() {
 		if (!MenuLayer::init()) return false;
 
 		auto main_title = this->getChildByID("main-title");
 
+		if(!Mod::get()->setSavedValue<bool>("not-first-boot", true)) {
+			Mod::get()->setSavedValue<bool>("new-appearance", false);
+			Mod::get()->setSavedValue<bool>("dis-anim", false);
+			Mod::get()->setSavedValue<float>("animation-length", 0.6f);
+			Mod::get()->setSavedValue<float>("animation-scale", 0.05f);
+			std::stringstream ss;
+			for(int i = 0; i < default_splashes.size(); i++) {
+				ss << "splash-" << i;
+				Mod::get()->setSavedValue<std::string>(ss.str().c_str(), default_splashes[i][0]);
+				ss << "-size";
+				Mod::get()->setSavedValue<std::string>(ss.str().c_str(), default_splashes[i][1]);
+				ss.str("");
+			}
+			Mod::get()->setSavedValue<int>("amount-of-splashes", default_splashes.size());
+		}
+
 		if(!onOpenRandom) {
 			std::random_device rd; 
 			std::mt19937 gen(rd()); 
-			std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
-			random_label = distr(gen);
+			std::uniform_int_distribution<> distr(0, Mod::get()->getSavedValue<int>("amount-of-splashes") - 1); 
+			random_splash = distr(gen);
 			onOpenRandom = true;
 		}
 
-		auto appearence_setting = Mod::get()->getSettingValue<bool>("appearance");
+		auto appearence_setting = Mod::get()->getSavedValue<bool>("new-appearance");
 
-		auto label = CCLabelBMFont::create("", "goldFont.fnt");
+		auto splash = CCLabelBMFont::create("", "goldFont.fnt");
 		auto winSize = CCDirector::get()->getWinSize();
 		auto density = winSize.width / winSize.height;
 		float posX, posY;
@@ -81,7 +111,7 @@ class $modify(MenuLayer) {
 		if(appearence_setting){
 			posX = main_title->getPositionX() + 167.f;
 			posY = main_title->getPositionY() - 11.f;
-			label->setRotation(-15.f);
+			splash->setRotation(-15.f);
 		} else {
 			if(density < 1.7f && density >= 1.5f) {
 				posX = winSize.width / 2 + 154.f;
@@ -93,36 +123,55 @@ class $modify(MenuLayer) {
 				posX = winSize.width / 2 + 183.f;
 				posY = winSize.height / 2 + 71.f;
 			}
-			label->setRotation(-9.f);
+			splash->setRotation(-9.f);
 		}
 		
-		label->setScale(std::stof((default_splashes[random_label][1])));
+		char* text = new char[Mod::get()->getSavedValue<int>("amount-of-splashes") + 1];
 
-		char* text = new char[default_splashes[random_label][0].size() + 1];
+		std::stringstream sss;
 
-		std::strcpy(text, default_splashes[random_label][0].c_str());
+		sss << "splash-" << random_splash;
+		
+		auto label_text = Mod::get()->getSavedValue<std::string>(sss.str().c_str());
 
-		label->setString(text);
+		std::strcpy(text, label_text.c_str());
+
+		splash->setString(text);
+
+		sss << "-size";
 
 		delete[] text;
+		
+		auto size = Mod::get()->getSavedValue<std::string>(sss.str().c_str());
 
-		// label->setScale(0.6f);
+		splash->setScale(std::stof((size)));
 
-		auto animation_speed = Mod::get()->getSettingValue<double>("animation-speed");
+		auto animation_length = Mod::get()->getSavedValue<float>("animation-length");
 
-		label->runAction(CCRepeatForever::create(CCSequence::create(
-			CCEaseOut::create(CCScaleTo::create(animation_speed, label->getScale() + 0.05f), animation_speed),
-			CCEaseOut::create(CCScaleTo::create(animation_speed, label->getScale()), animation_speed),
-			nullptr
-		)));
+		if(!Mod::get()->getSavedValue<bool>("dis-anim")) {
+			splash->runAction(CCRepeatForever::create(CCSequence::create(
+				CCEaseOut::create(CCScaleTo::create(animation_length, splash->getScale() + Mod::get()->getSavedValue<float>("animation-scale")), animation_length),
+				CCEaseOut::create(CCScaleTo::create(animation_length, splash->getScale()), animation_length),
+				nullptr
+			)))->setTag(1);
+		}
+		
+		splash->setZOrder(3);
+		splash->setID("minecraft-splash");
+		splash->setPosition(posX, posY);
 
-		label->setZOrder(3);
-		label->setID("minecraft-label");
-		label->setPosition(posX, posY);
+		auto spr = CCSprite::create("Cust_setBtn_001.png"_spr);
+		auto btn = CCMenuItemSpriteExtra::create(
+        	spr, this, menu_selector(MSMenuLayer::onSettingsLayer)
+		);
 
-		// Button & menu
+		auto dailyChestButton = this->getChildByID("right-side-menu")->getChildByID("daily-chest-button");
+		btn->setPositionX(dailyChestButton->getPositionX());
+		btn->setPositionY(dailyChestButton->getPositionY() - 55.f);
+		btn->setAnchorPoint(dailyChestButton->getAnchorPoint());
 
-		this->addChild(label);
+		getChildByID("right-side-menu")->addChild(btn);
+		addChild(splash);
 		return true;
 	}
 };
@@ -131,8 +180,8 @@ class $modify(PauseLayer) {
 	void onQuit(CCObject* sender) {
 		std::random_device rd; 
 		std::mt19937 gen(rd()); 
-		std::uniform_int_distribution<> distr(0, default_splashes.size() - 1); 
-		random_label = distr(gen);
+		std::uniform_int_distribution<> distr(0, Mod::get()->getSavedValue<int>("amount-of-splashes") - 1); 
+		random_splash = distr(gen);
 		PauseLayer::onQuit(sender);
 	}
 };
