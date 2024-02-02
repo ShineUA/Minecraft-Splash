@@ -53,7 +53,12 @@
 .cache/
 
 # secret files
-src/*
+# src/*
 
-!src/main.cpp
-
+# !src/main.cpp
+src/layers/SplashesListLayer.h
+src/layers/SplashesListLayer.cpp
+src/layers/SettingsLayer.cpp
+src/layers/SettingsLayer.h
+.gitignore
+ll.txt
