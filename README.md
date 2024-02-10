@@ -1,2 +1,2 @@
 # Minecraft Splash Mod
-This is a mod that recreates a splash from Minecraft
+This is the mod that recreates a splash from Minecraft
