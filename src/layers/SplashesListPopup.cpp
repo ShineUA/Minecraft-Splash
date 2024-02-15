@@ -118,7 +118,7 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
     splash_list_round_right->setRotation(180);
 
     auto splash_list = ListView::create(last_arr, 20.f, 308.f, 200.f);
-    splash_list->setPosition({130.5f, 60.f});
+    splash_list->setPosition({offset.x - 154.f, offset.y - 100.f});
 
     auto splash_list_bg = CCLayerColor::create();
     splash_list_bg->setOpacity(75);
