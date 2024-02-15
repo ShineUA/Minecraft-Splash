@@ -74,7 +74,7 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
         delete_btn->m_baseScale = 0.4f;
         delete_btn->setID(ss.str());
         delete_btn->setScale(0.4f);
-        delete_btn->setPosition({11.f, -150.f});
+        delete_btn->setPosition({offset.x - 273.f, offset.y - 310.f});
 
         auto edit_spr = CCSprite::create("editBtn_001.png"_spr);
         auto edit_btn = CCMenuItemSpriteExtra::create(
@@ -86,7 +86,7 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
         edit_btn->m_baseScale = 0.4f;
         edit_btn->setID(ss.str());
         edit_btn->setScale(0.4f);
-        edit_btn->setPosition({-9.f, -150.f});
+        edit_btn->setPosition({offset.x - 293.f, offset.y -310.f});
 
         item_menu->addChild(edit_btn);
         item_menu->addChild(delete_btn);
