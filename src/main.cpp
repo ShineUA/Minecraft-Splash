@@ -3,16 +3,14 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/MenuLayer.hpp>
 #include <Geode/modify/PauseLayer.hpp>
-#include <Geode/cocos/actions/CCActionInterval.h>
 #include <random>
 #include <string>
 #include <cstring>
-#include <Geode/cocos/base_nodes/Layout.hpp>
-#include <Geode/binding/FLAlertLayerProtocol.hpp>
+#include "settings/CustomSettings.h"
+#include "tools/Easings.h"
 
 
-
-std::array<std::array<std::string, 2>, 40> default_splashes = {{
+std::vector<std::vector<std::string>> default_splashes = {
 	{"Also try minecraft...", "0.6"},
 	{"Also try terraria...", "0.6"},
 	{"Go touch some grass...", "0.6"},
@@ -53,7 +51,7 @@ std::array<std::array<std::string, 2>, 40> default_splashes = {{
 	{"Time to go outside...", "0.6"},
 	{"To be continued...", "0.6"},
 	{"youre going to brazil", "0.6"}
-}};
+};
 
 int random_splash;
 
@@ -61,92 +59,9 @@ bool onOpenRandom = false;
 
 using namespace geode::prelude;
 
-//  class MySettingValue;
-
-//  class MySettingValue : public SettingValue {
-//      // store the current value in some form.
-//      // this may be an enum, a class, or
-//      // whatever it is your setting needs -
-//      // you are free to do whatever!
-
-//  public:
-//      bool load(matjson::Value const& json) override {
-//          // load the value of the setting from json,
-//          // returning true if loading was succesful
-//      }
-//      bool save(matjson::Value& json) const override {
-//          // save the value of the setting into json,
-//          // returning true if saving was succesful
-//      }
-//      SettingNode* createNode(float width) override {
-//          return MySettingNode::create(width);
-//      }
-
-//      // getters and setters for the value
-//  };
-
-//  class MySettingNode : public SettingNode {
-//  protected:
-//      bool init(MySettingValue* value, float width) {
-//          if (!SettingNode::init(value))
-//              return false;
-        
-//          // You may change the height to anything, but make sure to call
-//          // setContentSize!
-//          this->setContentSize({ width, 40.f });
-
-//          // Set up the UI. Note that Geode provides a background for the
-//          // setting automatically
-
-//          return true;
-//      }
-
-//      // Whenever the user interacts with your controls, you should call
-//      // this->dispatchChanged()
-
-//  public:
-//      // When the user wants to save this setting value, this function is
-//      // called - this is where you should actually set the value of your
-//      // setting
-//      void commit() override {
-//          // Set the actual value
-
-//          // Let the UI know you have committed the value
-//          this->dispatchCommitted();
-//      }
-
-//      // Geode calls this to query if the setting value has been changed,
-//      // and those changes haven't been committed
-//      bool hasUncommittedChanges() override {
-//          // todo
-//      }
-
-//      // Geode calls this to query if the setting has a value that is
-//      // different from its default value
-//      bool hasNonDefaultValue() override {
-//          // todo
-//      }
-
-//      // Geode calls this to reset the setting's value back to default
-//      void resetToDefault() override {
-//          // todo
-//      }
-
-//      static MySettingNode* create(MySettingValue* value, float width) {
-//          auto ret = new MySettingNode();
-//          if (ret && ret->init(value, width)) {
-//              ret->autorelease();
-//              return ret;
-//          }
-//          CC_SAFE_DELETE(ret);
-//          return nullptr;
-//      }
-//  };
-
-//  $on_mod(Loaded) {
-//      Mod::get()->addCustomSetting<MySettingValue>("my-setting", ...);
-//  }
-
+$on_mod(Loaded) {
+    Mod::get()->addCustomSetting<ArrayListValue>("splashes-vector", default_splashes);
+}
 
 class $modify(MenuLayer) {
 	bool init() {
@@ -154,23 +69,20 @@ class $modify(MenuLayer) {
 
 		auto main_title = this->getChildByID("main-title");
 
-		if(!Mod::get()->setSavedValue<bool>("not-first-boot", true)) {
-			std::stringstream ss;
-			for(int i = 0; i < default_splashes.size(); i++) {
-				ss << "splash-" << i;
-				Mod::get()->setSavedValue<std::string>(ss.str().c_str(), default_splashes[i][0]);
-				ss << "-size";
-				Mod::get()->setSavedValue<std::string>(ss.str().c_str(), default_splashes[i][1]);
-				ss.str("");
-			}
-			Mod::get()->setSavedValue<int>("amount-of-splashes", default_splashes.size());
+		if(!Mod::get()->setSavedValue<bool>("not-first-boot-after-1.2.2", true)) {
+			Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", default_splashes);
 		}
 
 		if(!onOpenRandom) {
-			std::random_device rd; 
-			std::mt19937 gen(rd()); 
-			std::uniform_int_distribution<> distr(0, Mod::get()->getSavedValue<int>("amount-of-splashes") - 1); 
-			random_splash = distr(gen);
+			auto am_of_spl = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size();
+			if(am_of_spl == 1) {
+				random_splash = 0;
+			} else {
+				std::random_device rd; 
+				std::mt19937 gen(rd()); 
+				std::uniform_int_distribution<std::mt19937::result_type> distr(0, am_of_spl - 1); 
+				random_splash = distr(gen);
+			}
 			onOpenRandom = true;
 		}
 
@@ -179,7 +91,8 @@ class $modify(MenuLayer) {
 		auto splash = CCLabelBMFont::create("", "goldFont.fnt");
 		auto winSize = CCDirector::get()->getWinSize();
 		auto density = winSize.width / winSize.height;
-		float posX, posY;
+		float posX;
+		float posY;
 
 		if(appearence_setting){
 			posX = main_title->getPositionX() + 167.f;
@@ -199,23 +112,22 @@ class $modify(MenuLayer) {
 			splash->setRotation(-9.f);
 		}
 		
-		char* text = new char[Mod::get()->getSavedValue<int>("amount-of-splashes") + 1];
+		auto label_text = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][0];
 
-		std::stringstream sss;
-
-		sss << "splash-" << random_splash;
-		
-		auto label_text = Mod::get()->getSavedValue<std::string>(sss.str().c_str());
+		char* text = new char[Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][0].size() + 1];
 
 		std::strcpy(text, label_text.c_str());
 
 		splash->setString(text);
 
-		sss << "-size";
-
 		delete[] text;
 		
-		auto size = Mod::get()->getSavedValue<std::string>(sss.str().c_str());
+		auto size = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][1];
+
+		CCActionInterval* inEasing;
+		CCActionInterval* outEasing;
+		inEasing = Easings::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"));
+		outEasing = Easings::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"));
 
 		splash->setScale(std::stof((size)));
 
@@ -223,13 +135,13 @@ class $modify(MenuLayer) {
 
 		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
 			splash->runAction(CCRepeatForever::create(CCSequence::create(
-				CCEaseOut::create(CCScaleTo::create(animation_length, splash->getScale() + Mod::get()->getSettingValue<double>("animation-scale")), animation_length),
-				CCEaseOut::create(CCScaleTo::create(animation_length, splash->getScale()), animation_length),
+				inEasing,
+				outEasing,
 				nullptr
-			)))->setTag(1);
+			)));
 		}
 		
-		splash->setZOrder(3);
+		splash->setZOrder(15);
 		splash->setID("minecraft-splash");
 		splash->setPosition(posX, posY);
 		addChild(splash);
@@ -239,10 +151,16 @@ class $modify(MenuLayer) {
 
 class $modify(PauseLayer) {
 	void onQuit(CCObject* sender) {
-		std::random_device rd; 
-		std::mt19937 gen(rd()); 
-		std::uniform_int_distribution<> distr(0, Mod::get()->getSavedValue<int>("amount-of-splashes") - 1); 
-		random_splash = distr(gen);
+		auto am_of_spl = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size();
+		if(am_of_spl == 1) {
+			random_splash = 0;
+		} else {
+			std::random_device rd; 
+			std::mt19937 gen(rd()); 
+			std::uniform_int_distribution<std::mt19937::result_type> distr(0, am_of_spl - 1); 
+			random_splash = distr(gen);
+		}
+		
 		PauseLayer::onQuit(sender);
 	}
 };
