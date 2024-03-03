@@ -8,7 +8,8 @@
 	"id": "shineua.minecraft_splash",
 	"name": "Minecraft Splash",
 	"developer": "ShineUA",
-	"description": "Mod which adds a splash from Minecraft",
+	"description": "Adds the splash text from Minecraft",
+	"repository": "https://github.com/ShineUA/minecraft-splash-mod-geode",
 	"resources": {
 		"sprites": [
 			"resources/sprites/*.png"
