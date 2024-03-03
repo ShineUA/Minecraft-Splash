@@ -6,6 +6,8 @@
 #include <random>
 #include <string>
 #include <cstring>
+#include <matjson/stl_serialize.hpp>
+#include <fmt/format.h>
 #include "settings/CustomSettings.h"
 #include "tools/Easings.h"
 
@@ -63,15 +65,18 @@ $on_mod(Loaded) {
     Mod::get()->addCustomSetting<ArrayListValue>("splashes-vector", default_splashes);
 }
 
+$execute {
+	if(!Mod::get()->setSavedValue<bool>("not-first-boot-after-1.2.2", true)) {
+		Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", default_splashes);
+		Mod::get()->setSavedValue<bool>("small-layout", false);
+	}
+}
+
 class $modify(MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
 
 		auto main_title = this->getChildByID("main-title");
-
-		if(!Mod::get()->setSavedValue<bool>("not-first-boot-after-1.2.2", true)) {
-			Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", default_splashes);
-		}
 
 		if(!onOpenRandom) {
 			auto am_of_spl = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size();
@@ -113,24 +118,13 @@ class $modify(MenuLayer) {
 		}
 		
 		auto label_text = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][0];
+		splash->setString(fmt::format("{}", label_text).c_str());
 
-		char* text = new char[Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][0].size() + 1];
-
-		std::strcpy(text, label_text.c_str());
-
-		splash->setString(text);
-
-		delete[] text;
-		
 		auto size = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][1];
-
-		CCActionInterval* inEasing;
-		CCActionInterval* outEasing;
-		inEasing = Easings::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"));
-		outEasing = Easings::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"));
-
 		splash->setScale(std::stof((size)));
 
+		CCActionInterval* inEasing = Easings::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"));
+		CCActionInterval* outEasing = Easings::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"));
 		auto animation_length = Mod::get()->getSettingValue<double>("animation-length");
 
 		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {

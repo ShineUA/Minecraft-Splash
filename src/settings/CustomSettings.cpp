@@ -86,8 +86,8 @@ void ArrayListNode::resetToDefault() {
 }
 
 void ArrayListNode::createPopup(cocos2d::CCObject* sender) {
-    auto objects = static_cast<ArrayListValue*>(m_value)->getArray();
-    auto popup = SplashesListPopup::create(objects);
+    auto value = static_cast<ArrayListValue*>(m_value);
+    auto popup = SplashesListPopup::create(value);
     auto scene = CCScene::get();
     scene->addChild(popup);
 }

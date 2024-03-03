@@ -1,8 +1,9 @@
 #include "SplashesListPopup.h"
+#include <fmt/format.h>
 
-SplashesListPopup* SplashesListPopup::create(std::vector<std::vector<std::string>> objects) {
+SplashesListPopup* SplashesListPopup::create(ArrayListValue* save_value) {
     SplashesListPopup* ret = new SplashesListPopup();
-    if (ret && ret->init(objects)) {
+    if (ret && ret->init(save_value)) {
         ret->autorelease();
     } else {
         delete ret;
@@ -11,8 +12,10 @@ SplashesListPopup* SplashesListPopup::create(std::vector<std::vector<std::string
     return ret;
 }
 
-bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
+bool SplashesListPopup::init(ArrayListValue* save_value) {
     if (!this->initWithColor({0, 0, 0, 75})) return false;
+
+    m_local_value = save_value;
 
     this->m_noElasticity = true;
     geode::cocos::handleTouchPriority(this);
@@ -50,14 +53,17 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
 
     closeBtn->setPosition({-186.f, 124.f});
 
-    auto last_arr = CCArray::create();
+    auto item_arr = CCArray::create();
 
-    std::stringstream ss;
+    auto splash_array = m_local_value->getArray();
 
-    for(int i = 0;i < objects.size();i++) {
+    for(int i = 0;i < splash_array.size();i++) {
         auto item_menu = CCMenu::create();
+        item_menu->setPosition({308.f / 2.f + 130.f, 20.f / 2.f});
+        item_menu->setContentWidth(40);
+        item_menu->setLayout(RowLayout::create()->setAutoScale(false), false);
 
-        auto splash = CCLabelBMFont::create(objects.at(i).at(0).c_str(), "bigFont.fnt");
+        auto splash = CCLabelBMFont::create(splash_array.at(i).at(0).c_str(), "bigFont.fnt");
         splash->setScale(0.4f);
         splash->setAnchorPoint({0.f, 0.5f});
         splash->setPosition({5.f, 10.f});
@@ -69,12 +75,10 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
             nullptr
         );
 
-        ss << i;
-
         delete_btn->m_baseScale = 0.4f;
-        delete_btn->setID(ss.str());
+        delete_btn->setID(fmt::format("{}", i).c_str());
         delete_btn->setScale(0.4f);
-        delete_btn->setPosition({offset.x - 273.f, offset.y - 310.f});
+        // delete_btn->setPosition({offset.x - 273.f, offset.y - 310.f});
 
         auto edit_spr = CCSprite::create("editBtn_001.png"_spr);
         auto edit_btn = CCMenuItemSpriteExtra::create(
@@ -84,9 +88,9 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
         );
 
         edit_btn->m_baseScale = 0.4f;
-        edit_btn->setID(ss.str());
+        edit_btn->setID(fmt::format("{}", i).c_str());
         edit_btn->setScale(0.4f);
-        edit_btn->setPosition({offset.x - 293.f, offset.y -310.f});
+        // edit_btn->setPosition({offset.x - 293.f, offset.y -310.f});
 
         item_menu->addChild(edit_btn);
         item_menu->addChild(delete_btn);
@@ -95,8 +99,8 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
 
         item_node->addChild(splash);
         item_node->addChild(item_menu);
-        last_arr->addObject(item_node);
-        ss.str("");
+        item_arr->addObject(item_node);
+        item_menu->updateLayout();
     }
 
     auto splash_list_round_top = CCScale9Sprite::createWithSpriteFrameName("GJ_commentTop_001.png");
@@ -117,7 +121,7 @@ bool SplashesListPopup::init(std::vector<std::vector<std::string>> objects) {
     splash_list_round_right->setPosition({offset.x + 163.7f, offset.y});
     splash_list_round_right->setRotation(180);
 
-    auto splash_list = ListView::create(last_arr, 20.f, 308.f, 200.f);
+    auto splash_list = ListView::create(item_arr, 20.f, 308.f, 200.f);
     splash_list->setPosition({offset.x - 154.f, offset.y - 100.f});
 
     auto splash_list_bg = CCLayerColor::create();
