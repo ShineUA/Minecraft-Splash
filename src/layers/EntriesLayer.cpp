@@ -232,7 +232,7 @@ void EntriesLayer::onExit(CCObject* sender) {
 void EntriesLayer::addSplash(CCObject* sender) {
     auto splash = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
     auto scale = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("scale"))->getString();
-    if(scale.empty() || splash.empty() || scale.ends_with(".")) {
+    if(scale.empty() || splash.empty() || scale.ends_with(".") || std::stof(scale) <= 0) {
         FLAlertLayer::create(
             "Error!",
             "Please fill all input fields <cr>correctly!</c>",
@@ -253,7 +253,7 @@ void EntriesLayer::addSplash(CCObject* sender) {
 void EntriesLayer::editSplash(CCObject* sender) {
     auto splash = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
     auto scale = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("scale"))->getString();
-    if(scale.empty() || splash.empty() || scale.ends_with(".")) {
+    if(scale.empty() || splash.empty() || scale.ends_with(".") || std::stof(scale) <= 0) {
         FLAlertLayer::create(
             "Error!",
             "Please fill all input fields <cr>correctly!</c>",
