@@ -131,6 +131,7 @@ bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
         auto label_input = InputNode::create(300, "Splash Text", "bigFont.fnt", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,'.!?0123456789 ", 40);
         label_input->setPositionY(85);
         label_input->setID("splash-text");
+        label_input->setString(this->m_save->getArray().at(this->m_index).at(0).c_str());
         label_input->getInput()->setDelegate(splash_delegate);
         
         auto scale_delegate = new EntriesLayer::ScaleInputDelegate();
@@ -138,6 +139,7 @@ bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
         auto scale_input = InputNode::create(50, "Scale", "bigFont.fnt", "0123456789.", 4);
         scale_input->getInput()->setLabelPlaceholderScale(0.4);
         scale_input->getInput()->setMaxLabelScale(0.5);
+        scale_input->setString(this->m_save->getArray().at(this->m_index).at(1).c_str());
         scale_input->getInput()->setDelegate(scale_delegate);
         scale_input->setPositionY(50);
         scale_input->setScale(0.8);
@@ -152,9 +154,9 @@ bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
         preview_tip->setOpacity(150);
         preview_tip->setPosition({offset.x, offset.y + 15.f});
 
-        this->m_preview_label = CCLabelBMFont::create(fmt::format("{}", this->m_def_preview_placeholder).c_str(), "goldFont.fnt");
+        this->m_preview_label = CCLabelBMFont::create(this->m_save->getArray().at(this->m_index).at(0).c_str(), "goldFont.fnt");
         this->m_preview_label->setPosition(preview_bg->getPosition());
-        this->m_preview_label->setScale(this->m_def_preview_scale);
+        this->m_preview_label->setScale(std::stof(this->m_save->getArray().at(this->m_index).at(1).c_str()));
 
         if(Mod::get()->getSettingValue<bool>("new-appearance")) {
             this->m_preview_label->setRotation(-15.f);
@@ -193,29 +195,6 @@ bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
         closeBtn->setVisible(false);
         bg->setVisible(false);
         this->setOpacity(0);
-        // bg->setContentSize(ccp(190, 90));
-        // auto label = CCLabelBMFont::create(fmt::format("Are you sure you want\nto delete splash {}?", this->m_index + 1).c_str(), "bigFont.fnt");
-        // label->setPosition({offset.x, offset.y + 20});
-        // label->setScale(0.425f);
-
-        // auto yesSpr = ButtonSprite::create("Yes");
-        // auto yesBtn = CCMenuItemSpriteExtra::create(
-        //     yesSpr,
-        //     this,
-        //     menu_selector(EntriesLayer::removeSplash)
-        // );
-
-        // auto noSpr = ButtonSprite::create("No");
-        // auto noBtn = CCMenuItemSpriteExtra::create(
-        //     noSpr,
-        //     this,
-        //     menu_selector(EntriesLayer::onExit)
-        // );
-
-        // layer->addChild(label);
-        
-        // menu->addChild(yesBtn);
-        // menu->addChild(noBtn);
         geode::createQuickPopup(
             "Info",
             fmt::format("Are you sure you want to delete splash {}?", this->m_index + 1).c_str(),
