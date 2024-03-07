@@ -3,8 +3,8 @@
 #include <Geode/Bindings.hpp>
 #include <string>
 #include <cstring>
-#include "../main.h"
 #include "../layers/SplashesListPopup.h"
+#include "../layers/EntriesLayer.h"
 
 using namespace geode::prelude;
 
@@ -21,19 +21,6 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
     // setContentSize!
     this->setContentSize({ width, 40.f });
 
-    m_currentArray = value->getArray();
-
-    auto items = CCArray::create();
-    std::stringstream ss;
-
-    for(int i = 0; i < m_currentArray.size(); i++) {
-        ss << m_currentArray.at(i).at(0);
-        auto label_holder = CCLabelBMFont::create(ss.str().c_str(), "bigFont.fnt");
-        label_holder->setScale(0.4f);
-        items->addObjectNew(label_holder);
-        ss.str("");
-    }
-
     auto ccmenu = CCMenu::create();
 
     auto spr = ButtonSprite::create("Edit Splashes");
@@ -46,12 +33,7 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
     btn->setScale(0.7f);
     btn->m_baseScale = 0.7f;
 
-    // auto splashes_view_list = ListView::create(items, 40.f, width - 20.f, 200.f - 50.f);
-    // splashes_view_list->setPosition(width / 2, 100.f);
-
-    // this->addChild(splashes_view_list);
-
-    ccmenu->addChild(btn); 
+    ccmenu->addChild(btn);
     this->addChild(ccmenu);
     return true;
 }
@@ -80,16 +62,22 @@ bool ArrayListNode::hasNonDefaultValue() {
 
 // Geode calls this to reset the setting's value back to default
 void ArrayListNode::resetToDefault() {
-    // auto input = static_cast<InputNode*>(this->getChildByID("menu")->getChildByID("test-input"));
-    // input->setString("test");
     static_cast<ArrayListValue*>(m_value)->setArray(default_splashes);
+    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", default_splashes);
+    if(default_splashes.size() == 1) {
+        random_splash = 0;
+    } else {
+        std::random_device rd; 
+        std::mt19937 gen(rd()); 
+        std::uniform_int_distribution<std::mt19937::result_type> distr(0, default_splashes.size() - 1); 
+        random_splash = distr(gen);
+    }
 }
 
 void ArrayListNode::createPopup(cocos2d::CCObject* sender) {
     auto value = static_cast<ArrayListValue*>(m_value);
     auto popup = SplashesListPopup::create(value);
-    auto scene = CCScene::get();
-    scene->addChild(popup);
+    CCScene::get()->addChild(popup);
 }
 
 ArrayListNode* ArrayListNode::create(ArrayListValue* value, float width) {

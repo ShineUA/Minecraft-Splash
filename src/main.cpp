@@ -125,7 +125,6 @@ class $modify(MenuLayer) {
 
 		CCActionInterval* inEasing = Easings::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"));
 		CCActionInterval* outEasing = Easings::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"));
-		auto animation_length = Mod::get()->getSettingValue<double>("animation-length");
 
 		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
 			splash->runAction(CCRepeatForever::create(CCSequence::create(

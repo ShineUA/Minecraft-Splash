@@ -2,6 +2,8 @@
 #include <Geode/loader/SettingNode.hpp>
 #include <vector>
 #include <matjson/stl_serialize.hpp>
+#include <random>
+#include "../main.h"
 
 using namespace geode::prelude;
 
