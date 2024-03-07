@@ -40,9 +40,8 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
 
 void ArrayListNode::commit() {
     // Set the actual value
-    // auto input = static_cast<InputNode*>(this->getChildByID("menu")->getChildByID("test-input"));
-    // static_cast<ArrayListValue*>(m_value)->setArray(input->getString());
     // Let the UI know you have committed the value
+    // My value is set in EntriesLayer
     this->dispatchCommitted();
 }
 
