@@ -128,7 +128,7 @@ bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
 
         auto splash_delegate = new EntriesLayer::SplashInputDelegate();
 
-        auto label_input = InputNode::create(300, "Splash Text", "bigFont.fnt", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,'.!?0123456789 ", 40);
+        auto label_input = InputNode::create(300, "Splash Text", "bigFont.fnt", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.!@%{}()[]$|\\/&;:+<>№=*^~\"'-_`0123456789 ", 40);
         label_input->setPositionY(85);
         label_input->setID("splash-text");
         label_input->setString(this->m_save->getArray().at(this->m_index).at(0).c_str());
