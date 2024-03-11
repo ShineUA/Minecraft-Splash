@@ -8,9 +8,3 @@ class Easings {
         static cocos2d::CCActionInterval* returnEasingIn(int num);
         static cocos2d::CCActionInterval* returnEasingOut(int num);
 };
-
-class EasingsPreview {
-    public:
-        static cocos2d::CCActionInterval* returnEasingIn(int num, cocos2d::CCLabelBMFont* label);
-        static cocos2d::CCActionInterval* returnEasingOut(int num, cocos2d::CCLabelBMFont* label);
-};
