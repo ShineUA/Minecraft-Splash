@@ -4,7 +4,7 @@
 
 SplashesListPopup* SplashesListPopup::create(ArrayListValue* save_value) {
     SplashesListPopup* ret = new SplashesListPopup();
-    if (ret && ret->init(save_value)) {
+    if (ret && ret->init(375.f, 250.f, save_value)) {
         ret->autorelease();
     } else {
         delete ret;
@@ -13,47 +13,74 @@ SplashesListPopup* SplashesListPopup::create(ArrayListValue* save_value) {
     return ret;
 }
 
-bool SplashesListPopup::init(ArrayListValue* save_value) {
-    if (!this->initWithColor({0, 0, 0, 75})) return false;
-
+bool SplashesListPopup::setup(ArrayListValue* save_value) {
+    this->setZOrder(150);
     this->m_local_value = save_value;
 
-    this->m_noElasticity = true;
-    geode::cocos::handleTouchPriority(this);
-    this->registerWithTouchDispatcher();
-    this->setTouchEnabled(true);
-    this->setKeypadEnabled(true);
-    this->setZOrder(125);
+    auto item_arr = CCArray::create();
 
-    auto layer = CCLayer::create();
-    auto menu = CCMenu::create();
-    this->m_mainLayer = layer;
-    this->m_buttonMenu = menu;
-    
-    this->addChild(layer);
+    this->setupSplashesList();
 
-    const float width = 375, height = 250;
-
-    auto* director = CCDirector::sharedDirector();
-
-    const CCPoint offset = director->getWinSize() / 2.f;
-
-    auto bg = extension::CCScale9Sprite::create("GJ_square01.png");
-    bg->setContentSize({width, height});
-    bg->setPosition(offset);
-    menu->setPosition(offset);
-    bg->setZOrder(-2);
-    layer->addChild(bg);
-
-    auto closeBtn_spr = CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png");
-    auto closeBtn = CCMenuItemSpriteExtra::create(
-        closeBtn_spr,
+    auto addBtn_spr = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
+    auto addBtn = CCMenuItemSpriteExtra::create(
+        addBtn_spr,
         this,
-        menu_selector(SplashesListPopup::onCloseBtn)
+        menu_selector(SplashesListPopup::addEntry)
     );
+    
+    addBtn->setPositionX(169.f);
+    addBtn->setScale(0.525f);
+    addBtn->m_baseScale = 0.525f;
 
-    closeBtn->setPosition({-186.f, 124.f});
+    this->m_buttonMenu->addChild(addBtn);
+    return true;
+}
 
+void SplashesListPopup::addEntry(CCObject* sender) {
+    auto node = EntriesLayer::create(this->m_local_value, 0, 0, this);
+    CCScene::get()->addChild(node);
+}
+
+void SplashesListPopup::editEntry(CCObject* sender) {
+    auto node = EntriesLayer::create(this->m_local_value, std::stoi(static_cast<CCMenuItemSpriteExtra*>(sender)->getID()), 1, this);
+    CCScene::get()->addChild(node);
+}
+
+void SplashesListPopup::deleteEntry(CCObject* sender) {
+    if(this->m_local_value->getArray().size() <= 1) {
+        return FLAlertLayer::create(
+            "Error",
+            "There's must be at least one splash!",
+            "OK"
+        )->show();
+    }
+    auto index = std::stoi(static_cast<CCMenuItemSpriteExtra*>(sender)->getID());
+    geode::createQuickPopup(
+        "Info",
+        fmt::format("Are you sure you want to delete splash {}?", index + 1).c_str(),
+        "Yes", "No",
+        [this, index](auto, bool btn2) {
+            if(!btn2) {
+                std::vector<std::vector<std::string>> v = this->m_local_value->getArray();
+                v.erase(v.begin() + index);
+                this->m_local_value->setArray(v);
+                auto am_of_spl = v.size();
+                if(am_of_spl == 1) {
+                    random_splash = 0;
+                } else {
+                    std::random_device rd; 
+                    std::mt19937 gen(rd()); 
+                    std::uniform_int_distribution<std::mt19937::result_type> distr(0, am_of_spl - 1); 
+                    random_splash = distr(gen);
+                }
+                Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
+                this->updateSplashesList();
+            } 
+        }
+    );
+}
+
+void SplashesListPopup::setupSplashesList() {
     auto item_arr = CCArray::create();
 
     auto splash_array = m_local_value->getArray();
@@ -108,87 +135,49 @@ bool SplashesListPopup::init(ArrayListValue* save_value) {
     auto splash_list_round_top = CCScale9Sprite::createWithSpriteFrameName("GJ_commentTop_001.png");
     splash_list_round_top->setContentSize(ccp(320.f, 22.f));
     splash_list_round_top->setPosition({offset.x, offset.y + 95.f});
+    splash_list_round_top->setID("list-top");
 
     auto splash_list_round_down = CCScale9Sprite::createWithSpriteFrameName("GJ_commentTop_001.png");
     splash_list_round_down->setContentSize(ccp(320.f, 22.f));
     splash_list_round_down->setPosition({offset.x, offset.y - 95.f});
     splash_list_round_down->setRotation(180);
+    splash_list_round_down->setID("list-down");
 
     auto splash_list_round_left = CCScale9Sprite::createWithSpriteFrameName("GJ_commentSide_001.png");
     splash_list_round_left->setContentSize(ccp(22.f, 170.f));
     splash_list_round_left->setPosition({offset.x - 163.7f, offset.y});
+    splash_list_round_left->setID("list-left");
 
     auto splash_list_round_right = CCScale9Sprite::createWithSpriteFrameName("GJ_commentSide_001.png");
     splash_list_round_right->setContentSize(ccp(22.f, 170.f));
     splash_list_round_right->setPosition({offset.x + 163.7f, offset.y});
     splash_list_round_right->setRotation(180);
+    splash_list_round_right->setID("list-right");
 
-    this->m_local_list = ListView::create(item_arr, 40.f, 308.f, 200.f);
-    this->m_local_list->setPosition({offset.x - 154.f, offset.y - 100.f});
+    auto list = ListView::create(item_arr, 40.f, 308.f, 200.f);
+    list->setPosition({offset.x - 154.f, offset.y - 100.f});
+    list->setID("list");
 
     auto splash_list_bg = CCLayerColor::create();
     splash_list_bg->setOpacity(75);
     splash_list_bg->setContentSize(ccp(308.f, 200.f));
-    splash_list_bg->setPosition(this->m_local_list->getPosition());
+    splash_list_bg->setPosition(list->getPosition());
+    splash_list_bg->setID("list-bg");
 
-    auto addBtn_spr = CCSprite::createWithSpriteFrameName("GJ_plusBtn_001.png");
-    auto addBtn = CCMenuItemSpriteExtra::create(
-        addBtn_spr,
-        this,
-        menu_selector(SplashesListPopup::addEntry)
-    );
-    
-    addBtn->setPositionX(169.f);
-    addBtn->setScale(0.525f);
-    addBtn->m_baseScale = 0.525f;
-
-    layer->addChild(splash_list_bg);
-    layer->addChild(m_local_list);
-    layer->addChild(splash_list_round_top);
-    layer->addChild(splash_list_round_down);
-    layer->addChild(splash_list_round_left);
-    layer->addChild(splash_list_round_right);
-
-    menu->addChild(closeBtn);
-    menu->addChild(addBtn);
-
-    layer->addChild(menu);
-
-    return true;
+    this->m_mainLayer->addChild(splash_list_bg);
+    this->m_mainLayer->addChild(list);
+    this->m_mainLayer->addChild(splash_list_round_top);
+    this->m_mainLayer->addChild(splash_list_round_down);
+    this->m_mainLayer->addChild(splash_list_round_left);
+    this->m_mainLayer->addChild(splash_list_round_right);
 }
 
-void SplashesListPopup::addEntry(CCObject* sender) {
-    auto node = EntriesLayer::create(this->m_local_value, 0);
-    CCScene::get()->addChild(node);
-    this->keyBackClicked();
-}
-
-void SplashesListPopup::editEntry(CCObject* sender) {
-    auto node = EntriesLayer::create(this->m_local_value, std::stoi(static_cast<CCMenuItemSpriteExtra*>(sender)->getID()), 1);
-    CCScene::get()->addChild(node);
-    this->keyBackClicked();
-}
-
-void SplashesListPopup::deleteEntry(CCObject* sender) {
-    if(this->m_local_value->getArray().size() <= 1) {
-        FLAlertLayer::create(
-            "Error",
-            "There's must be at least one splash!",
-            "OK"
-        )->show();
-        return;
-    }
-    auto node = EntriesLayer::create(this->m_local_value, std::stoi(static_cast<CCMenuItemSpriteExtra*>(sender)->getID()), 2);
-    CCScene::get()->addChild(node);
-    this->keyBackClicked();
-}
-
-void SplashesListPopup::keyBackClicked() {
-    this->setTouchEnabled(false);
-    this->setKeypadEnabled(false);
-    this->removeFromParentAndCleanup(true);
-}
-
-void SplashesListPopup::onCloseBtn(CCObject* sender) {
-    this->keyBackClicked();
+void SplashesListPopup::updateSplashesList() {
+    this->m_mainLayer->getChildByID("list")->removeFromParentAndCleanup(true);
+    this->m_mainLayer->getChildByID("list-bg")->removeFromParentAndCleanup(true);
+    this->m_mainLayer->getChildByID("list-top")->removeFromParentAndCleanup(true);
+    this->m_mainLayer->getChildByID("list-down")->removeFromParentAndCleanup(true);
+    this->m_mainLayer->getChildByID("list-left")->removeFromParentAndCleanup(true);
+    this->m_mainLayer->getChildByID("list-right")->removeFromParentAndCleanup(true);
+    this->setupSplashesList();
 }

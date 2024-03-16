@@ -4,9 +4,9 @@
 #include "../main.h"
 #include <random>
 
-EntriesLayer* EntriesLayer::create(ArrayListValue* save, int index, int mode) {
+EntriesLayer* EntriesLayer::create(ArrayListValue* save, int index, int mode, SplashesListPopup* prev_popup) {
     EntriesLayer* ret = new EntriesLayer();
-    if (ret && ret->init(save, index, mode)) {
+    if (ret && ret->init(435.f, 285.f, save, index, mode, prev_popup)) {
         ret->autorelease();
     } else {
         delete ret;
@@ -15,46 +15,15 @@ EntriesLayer* EntriesLayer::create(ArrayListValue* save, int index, int mode) {
     return ret;
 }
 
-bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
-    if (!this->initWithColor({0, 0, 0, 75})) return false;
+bool EntriesLayer::setup(ArrayListValue* save, int index, int mode, SplashesListPopup* prev_popup) {
     this->m_save = save;
 
-    const CCPoint offset = CCDirector::get()->getWinSize() / 2.f;
+    this->m_prev_popup = prev_popup;
 
-    this->m_noElasticity = true;
-    geode::cocos::handleTouchPriority(this);
-    this->registerWithTouchDispatcher();
-    this->setTouchEnabled(true);
-    this->setKeypadEnabled(true);
-    this->setZOrder(150);
-
-    auto layer = CCLayer::create();
-    auto menu = CCMenu::create();
-    this->m_mainLayer = layer;
-    this->m_buttonMenu = menu;
+    this->setZOrder(160);
     this->m_index = index;
-
-    auto bg = CCScale9Sprite::create("GJ_square01.png");
-    bg->setPosition(offset);
-
-    layer->addChild(bg);
-
-    auto closeSpr = CCSprite::createWithSpriteFrameName("GJ_closeBtn_001.png");
-    auto closeBtn = CCMenuItemSpriteExtra::create(
-        closeSpr,
-        this,
-        menu_selector(EntriesLayer::onExit)
-    );
-    closeBtn->setScale(0.8f);
-    closeBtn->m_baseScale = 0.8f;
-    menu->addChild(closeBtn);
-
     if(mode == 0) {
-        bg->setContentSize(ccp(435, 285));
-        closeBtn->setPosition({-215, 140});
-
-        auto add_label = CCLabelBMFont::create("Add Splash", "goldFont.fnt");
-        add_label->setPosition({offset.x, offset.y + 65 + 60});
+        this->setTitle("Add Splash", "goldFont.fnt", 1);
 
         auto splash_delegate = new EntriesLayer::SplashInputDelegate();
 
@@ -111,20 +80,17 @@ bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
         );
         add_btn->setPositionY(-120);
 
-        layer->addChild(preview_bg);
-        layer->addChild(add_label);
-        layer->addChild(preview_tip);
-        layer->addChild(this->m_preview_label);
+        this->m_mainLayer->addChild(preview_bg);
+        this->m_mainLayer->addChild(preview_tip);
+        this->m_mainLayer->addChild(this->m_preview_label);
 
-        menu->addChild(label_input);
-        menu->addChild(scale_input);
-        menu->addChild(add_btn);
+        this->m_buttonMenu->addChild(label_input);
+        this->m_buttonMenu->addChild(scale_input);
+        this->m_buttonMenu->addChild(add_btn);
     } else if(mode == 1) {
-        bg->setContentSize(ccp(435, 285));
-        closeBtn->setPosition({-215, 140});
-
-        auto edit_label = CCLabelBMFont::create("Edit Splash", "goldFont.fnt");
-        edit_label->setPosition({offset.x, offset.y + 65 + 60});
+        // auto edit_label = CCLabelBMFont::create("Edit Splash", "goldFont.fnt");
+        // edit_label->setPosition({offset.x, offset.y + 65 + 60});
+        this->setTitle("Edit Splash", "goldFont.fnt", 1);
 
         auto splash_delegate = new EntriesLayer::SplashInputDelegate();
 
@@ -183,62 +149,28 @@ bool EntriesLayer::init(ArrayListValue* save, int index, int mode) {
         );
         edit_btn->setPositionY(-120);
 
-        layer->addChild(preview_bg);
-        layer->addChild(edit_label);
-        layer->addChild(preview_tip);
-        layer->addChild(this->m_preview_label);
+        this->m_mainLayer->addChild(preview_bg);
+        this->m_mainLayer->addChild(preview_tip);
+        this->m_mainLayer->addChild(this->m_preview_label);
 
-        menu->addChild(label_input);
-        menu->addChild(scale_input);
-        menu->addChild(edit_btn);
-    } else if(mode == 2) {
-        closeBtn->setVisible(false);
-        bg->setVisible(false);
-        this->setOpacity(0);
-        geode::createQuickPopup(
-            "Info",
-            fmt::format("Are you sure you want to delete splash {}?", this->m_index + 1).c_str(),
-            "Yes", "No",
-            [this](auto, bool btn2) {
-                if(!btn2) {
-                    this->removeSplash(nullptr);
-                } else {
-                    this->keyBackClicked();
-                }
-            }
-        );
+        this->m_buttonMenu->addChild(label_input);
+        this->m_buttonMenu->addChild(scale_input);
+        this->m_buttonMenu->addChild(edit_btn);
     } else {
         this->keyBackClicked();
     }
-
-    layer->addChild(menu);
-    this->addChild(layer);
-
     return true;
-}
-
-void EntriesLayer::keyBackClicked() {
-    this->setTouchEnabled(false);
-    this->setKeypadEnabled(false);
-    this->removeFromParentAndCleanup(true);
-    auto popup = SplashesListPopup::create(this->m_save);
-    CCScene::get()->addChild(popup);
-}
-
-void EntriesLayer::onExit(CCObject* sender) {
-    this->keyBackClicked();
 }
 
 void EntriesLayer::addSplash(CCObject* sender) {
     auto splash = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
     auto scale = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("scale"))->getString();
     if(scale.empty() || splash.empty() || scale.ends_with(".") || std::stof(scale) <= 0) {
-        FLAlertLayer::create(
+        return FLAlertLayer::create(
             "Error!",
             "Please fill all input fields <cr>correctly!</c>",
             "OK"
         )->show();
-        return;
     }
     std::vector<std::vector<std::string>> v = this->m_save->getArray();
     std::vector<std::string> v_an;
@@ -247,19 +179,19 @@ void EntriesLayer::addSplash(CCObject* sender) {
     v.push_back(v_an);
     this->m_save->setArray(v);
     Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
-    this->keyBackClicked();
+    this->m_prev_popup->updateSplashesList();
+    this->onClose(nullptr);
 }
 
 void EntriesLayer::editSplash(CCObject* sender) {
     auto splash = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
     auto scale = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("scale"))->getString();
     if(scale.empty() || splash.empty() || scale.ends_with(".") || std::stof(scale) <= 0) {
-        FLAlertLayer::create(
+        return FLAlertLayer::create(
             "Error!",
             "Please fill all input fields <cr>correctly!</c>",
             "OK"
         )->show();
-        return;
     }
     std::vector<std::vector<std::string>> v = this->m_save->getArray();
     std::vector<std::string> v_an;
@@ -268,24 +200,8 @@ void EntriesLayer::editSplash(CCObject* sender) {
     v.at(this->m_index) = v_an;
     this->m_save->setArray(v);
     Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
-    this->keyBackClicked();
-}
-
-void EntriesLayer::removeSplash(CCObject* sender) {
-    std::vector<std::vector<std::string>> v = this->m_save->getArray();
-    v.erase(v.begin() + this->m_index);
-    this->m_save->setArray(v);
-    auto am_of_spl = v.size();
-    if(am_of_spl == 1) {
-        random_splash = 0;
-    } else {
-        std::random_device rd; 
-        std::mt19937 gen(rd()); 
-        std::uniform_int_distribution<std::mt19937::result_type> distr(0, am_of_spl - 1); 
-        random_splash = distr(gen);
-    }
-    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
-    this->keyBackClicked();
+    this->m_prev_popup->updateSplashesList();
+    this->onClose(nullptr);
 }
 
 void EntriesLayer::SplashInputDelegate::textChanged(CCTextInputNode* p0) {
