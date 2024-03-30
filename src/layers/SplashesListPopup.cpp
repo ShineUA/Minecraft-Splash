@@ -77,7 +77,7 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
                 std::vector<std::vector<std::string>> v = this->m_node->getValue();
                 v.erase(v.begin() + index);
                 this->m_node->setValue(v);
-                this->updateSplashesList(offset.x - 12, offset.y, 320, 225);
+                this->updateSplashesList(offset.x, offset.y, 320, 225);
                 this->m_node->dispatchChangedPublic();
             } 
         }
@@ -186,7 +186,7 @@ void SplashesListPopup::deleteAllSplashes(CCObject* sender) {
                 };
                 this->m_node->setValue(v);
                 this->m_node->dispatchChangedPublic();
-                this->updateSplashesList(offset.x - 12, offset.y, 320, 225);
+                this->updateSplashesList(offset.x, offset.y, 320, 225);
             }
         }
     );

@@ -179,7 +179,7 @@ void EditEntriesLayer::addSplash(CCObject* sender) {
     v.push_back(v_an);
     this->m_node->setValue(v);
     Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
-    this->m_previousPopup->updateSplashesList(offset.x - 12, offset.y, 320, 225);
+    this->m_previousPopup->updateSplashesList(offset.x, offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
     this->onClose(nullptr);
 }
@@ -201,7 +201,7 @@ void EditEntriesLayer::editSplash(CCObject* sender) {
     v.at(this->m_index) = v_an;
     this->m_node->setValue(v);
     Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
-    this->m_previousPopup->updateSplashesList(offset.x - 12, offset.y, 320, 225);
+    this->m_previousPopup->updateSplashesList(offset.x, offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
     this->onClose(nullptr);
 }

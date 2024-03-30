@@ -1,3 +1,7 @@
+# v1.2.7
+
+- Minor bugfix.
+
 # v1.2.6
 
 - Added `Delete All` button to `SplashListPopup` and slightly changed UI of mentioned popup.
