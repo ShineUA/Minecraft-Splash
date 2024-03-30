@@ -11,7 +11,7 @@ add_library(${PROJECT_NAME} SHARED
     src/settings/CustomSettings.cpp
     src/tools/Easings.cpp
     src/layers/SplashesListPopup.cpp
-    src/layers/EntriesLayer.cpp
+    src/layers/EditEntriesLayer.cpp
     # Add your cpp files here
 )
 

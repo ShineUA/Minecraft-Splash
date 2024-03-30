@@ -9,6 +9,7 @@
 #include <matjson/stl_serialize.hpp>
 #include <fmt/format.h>
 #include "settings/CustomSettings.h"
+#include "settings/SectionSetting.hpp"
 #include "tools/Easings.h"
 
 
@@ -62,13 +63,14 @@ bool onOpenRandom = false;
 using namespace geode::prelude;
 
 $on_mod(Loaded) {
-    Mod::get()->addCustomSetting<ArrayListValue>("splashes-vector", default_splashes);
+    Mod::get()->addCustomSetting<ArrayListValue>("splashes", default_splashes);
+	Mod::get()->addCustomSetting<SectionSettingValue>("label-label", "none");
+	Mod::get()->addCustomSetting<SectionSettingValue>("splashes-label", "none");
 }
 
 $execute {
 	if(!Mod::get()->setSavedValue<bool>("not-first-boot-after-1.2.2", true)) {
 		Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", default_splashes);
-		Mod::get()->setSavedValue<bool>("small-layout", false);
 	}
 }
 

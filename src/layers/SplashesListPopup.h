@@ -7,17 +7,18 @@
 
 using namespace geode::prelude;
 
-class SplashesListPopup : public geode::Popup<ArrayListValue*> {
+class SplashesListPopup : public geode::Popup<ArrayListNode*> {
     protected:
         const cocos2d::CCPoint offset = cocos2d::CCDirector::sharedDirector()->getWinSize() / 2;
-        ArrayListValue* m_local_value;
-        virtual bool setup(ArrayListValue* save_value) override;
+        ArrayListNode* m_node;
+        virtual bool setup(ArrayListNode* node) override;
         virtual void deleteEntry(cocos2d::CCObject* sender);
         virtual void addEntry(cocos2d::CCObject* sender);
         virtual void editEntry(cocos2d::CCObject* sender);
-        virtual void setupSplashesList();
+        virtual void setupSplashesList(float pos_x, float pos_y, float scale_x, float scale_y);
+        virtual void deleteAllSplashes(cocos2d::CCObject* sender);
     public:
-        virtual void updateSplashesList();
-        static SplashesListPopup* create(ArrayListValue* save_value);
+        virtual void updateSplashesList(float pos_x, float pos_y, float scale_x, float scale_y);
+        static SplashesListPopup* create(ArrayListNode* node);
 };
 

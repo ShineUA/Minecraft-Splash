@@ -29,7 +29,8 @@ class ArrayListValue : public SettingValue {
         SettingNode* createNode(float width) override;
 
         void setArray(std::vector<std::vector<std::string>> splashArray) {
-            m_splashArray = splashArray;
+            this->m_splashArray.clear();
+            this->m_splashArray.assign(splashArray.begin(), splashArray.end());
         }
 
         std::vector<std::vector<std::string>> getArray() {
@@ -40,7 +41,7 @@ class ArrayListValue : public SettingValue {
 
 class ArrayListNode : public SettingNode {
     protected:
-        std::vector<std::vector<std::string>> m_currentArray;
+        std::vector<std::vector<std::string>> m_unsavedArray;
         virtual bool init(ArrayListValue* value, float width);
         virtual void createPopup(cocos2d::CCObject* sender);
     public:
@@ -58,6 +59,12 @@ class ArrayListNode : public SettingNode {
 
         // Geode calls this to reset the setting's value back to default
         void resetToDefault() override;
+
+        std::vector<std::vector<std::string>> getValue();
+
+        void setValue(std::vector<std::vector<std::string>> value);
+
+        void dispatchChangedPublic();
 
         static ArrayListNode* create(ArrayListValue* value, float width);
 };

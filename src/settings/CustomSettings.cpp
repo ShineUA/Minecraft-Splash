@@ -3,8 +3,11 @@
 #include <Geode/Bindings.hpp>
 #include <string>
 #include <cstring>
+
+#pragma once
+
 #include "../layers/SplashesListPopup.h"
-#include "../layers/EntriesLayer.h"
+#include "../layers/EditEntriesLayer.h"
 
 using namespace geode::prelude;
 
@@ -16,6 +19,8 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
     if (!SettingNode::init(value))
         return false;
     geode::cocos::handleTouchPriority(this);
+
+    this->setValue(value->getArray());
     
     // You may change the height to anything, but make sure to call 
     // setContentSize!
@@ -42,41 +47,54 @@ void ArrayListNode::commit() {
     // Set the actual value
     // Let the UI know you have committed the value
     // My value is set in EntriesLayer
+    static_cast<ArrayListValue*>(m_value)->setArray(this->getValue());
+    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector",  static_cast<ArrayListValue*>(m_value)->getArray());
+    if(static_cast<ArrayListValue*>(m_value)->getArray().size() == 1) {
+        random_splash = 0;
+    } else {
+        std::random_device rd; 
+        std::mt19937 gen(rd()); 
+        std::uniform_int_distribution<std::mt19937::result_type> distr(0, static_cast<ArrayListValue*>(m_value)->getArray().size() - 1); 
+        random_splash = distr(gen);
+    }
     this->dispatchCommitted();
 }
 
 // Geode calls this to query if the setting value has been changed, 
 // and those changes haven't been committed
 bool ArrayListNode::hasUncommittedChanges() {
-    // todo
-    return true;
+    return m_unsavedArray != static_cast<ArrayListValue*>(m_value)->getArray();
 }
 
 // Geode calls this to query if the setting has a value that is 
 // different from its default value
 bool ArrayListNode::hasNonDefaultValue() {
     // todo
-    return true;
+    return false;
+}
+
+std::vector<std::vector<std::string>> ArrayListNode::getValue() {
+    return this->m_unsavedArray;
+}
+
+void ArrayListNode::setValue(std::vector<std::vector<std::string>> value) {
+    this->m_unsavedArray.clear();
+    this->m_unsavedArray.assign(value.begin(), value.end());
 }
 
 // Geode calls this to reset the setting's value back to default
 void ArrayListNode::resetToDefault() {
-    static_cast<ArrayListValue*>(m_value)->setArray(default_splashes);
-    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", default_splashes);
-    if(default_splashes.size() == 1) {
-        random_splash = 0;
-    } else {
-        std::random_device rd; 
-        std::mt19937 gen(rd()); 
-        std::uniform_int_distribution<std::mt19937::result_type> distr(0, default_splashes.size() - 1); 
-        random_splash = distr(gen);
-    }
+    this->setValue(default_splashes);
+    this->dispatchChangedPublic();
 }
 
 void ArrayListNode::createPopup(cocos2d::CCObject* sender) {
-    auto value = static_cast<ArrayListValue*>(m_value);
-    auto popup = SplashesListPopup::create(value);
+    auto popup = SplashesListPopup::create(this);
     CCScene::get()->addChild(popup);
+}
+
+void ArrayListNode::dispatchChangedPublic() {
+    this->dispatchChanged();
 }
 
 ArrayListNode* ArrayListNode::create(ArrayListValue* value, float width) {
@@ -88,3 +106,5 @@ ArrayListNode* ArrayListNode::create(ArrayListValue* value, float width) {
     CC_SAFE_DELETE(ret);
     return nullptr;
 }
+
+
