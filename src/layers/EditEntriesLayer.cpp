@@ -3,6 +3,7 @@
 #include "../tools/Easings.h"
 #include "../main.h"
 #include <random>
+#include <Geode/ui/TextInput.hpp>
 
 EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int mode, SplashesListPopup* prev_popup) {
     EditEntriesLayer* ret = new EditEntriesLayer();
@@ -20,24 +21,28 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 
     this->m_previousPopup = prev_popup;
 
-    this->setZOrder(160);
+    this->setZOrder(300);
     this->m_index = index;
     if(mode == 0) {
         this->setTitle("Add Splash", "goldFont.fnt", 1);
 
         auto splash_delegate = new EditEntriesLayer::SplashInputDelegate();
 
-        auto label_input = InputNode::create(300, "Splash Text", "bigFont.fnt", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,'.!?0123456789 ", 40);
+        auto label_input = TextInput::create(300, "Splash Text", "bigFont.fnt");
+        label_input->setFilter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,'.!?0123456789 ");
+        label_input->setMaxCharCount(40);
         label_input->setPositionY(85);
         label_input->setID("splash-text");
-        label_input->getInput()->setDelegate(splash_delegate);
+        label_input->getInputNode()->setDelegate(splash_delegate);
         
         auto scale_delegate = new EditEntriesLayer::ScaleInputDelegate();
 
-        auto scale_input = InputNode::create(50, "Scale", "bigFont.fnt", "0123456789.", 4);
-        scale_input->getInput()->setLabelPlaceholderScale(0.4);
-        scale_input->getInput()->setMaxLabelScale(0.5);
-        scale_input->getInput()->setDelegate(scale_delegate);
+        auto scale_input = TextInput::create(50, "Scale", "bigFont.fnt");
+        scale_input->setFilter("0123456789.");
+        scale_input->setMaxCharCount(4);
+        scale_input->getInputNode()->setLabelPlaceholderScale(0.4);
+        scale_input->getInputNode()->setMaxLabelScale(0.5);
+        scale_input->getInputNode()->setDelegate(scale_delegate);
         scale_input->setPositionY(50);
         scale_input->setScale(0.8);
         scale_input->setID("scale");
@@ -94,19 +99,23 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 
         auto splash_delegate = new EditEntriesLayer::SplashInputDelegate();
 
-        auto label_input = InputNode::create(300, "Splash Text", "bigFont.fnt", "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.!@%{}()[]$|\\/&;:+<>№=*^~\"'-_`0123456789 ", 40);
+        auto label_input = TextInput::create(300, "Splash Text", "bigFont.fnt");
+        label_input->setFilter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,.!@%{}()[]$|\\/&;:+<>№=*^~\"'-_`0123456789 ");
+        label_input->setMaxCharCount(40);
         label_input->setPositionY(85);
         label_input->setID("splash-text");
         label_input->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
-        label_input->getInput()->setDelegate(splash_delegate);
+        label_input->getInputNode()->setDelegate(splash_delegate);
         
         auto scale_delegate = new EditEntriesLayer::ScaleInputDelegate();
 
-        auto scale_input = InputNode::create(50, "Scale", "bigFont.fnt", "0123456789.", 4);
-        scale_input->getInput()->setLabelPlaceholderScale(0.4);
-        scale_input->getInput()->setMaxLabelScale(0.5);
+        auto scale_input = TextInput::create(50, "Scale", "bigFont.fnt");
+        scale_input->setFilter("0123456789.");
+        scale_input->setMaxCharCount(4);
+        scale_input->getInputNode()->setLabelPlaceholderScale(0.4);
+        scale_input->getInputNode()->setMaxLabelScale(0.5);
         scale_input->setString(this->m_node->getValue().at(this->m_index).at(1).c_str());
-        scale_input->getInput()->setDelegate(scale_delegate);
+        scale_input->getInputNode()->setDelegate(scale_delegate);
         scale_input->setPositionY(50);
         scale_input->setScale(0.8);
         scale_input->setID("scale");
@@ -163,8 +172,8 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 }
 
 void EditEntriesLayer::addSplash(CCObject* sender) {
-    auto splash = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
-    auto scale = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("scale"))->getString();
+    auto splash = static_cast<TextInput*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
+    auto scale = static_cast<TextInput*>(this->m_buttonMenu->getChildByID("scale"))->getString();
     if(scale.empty() || splash.empty() || scale.ends_with(".") || std::stof(scale) <= 0) {
         return FLAlertLayer::create(
             "Error!",
@@ -178,15 +187,15 @@ void EditEntriesLayer::addSplash(CCObject* sender) {
     v_an.push_back(scale);
     v.push_back(v_an);
     this->m_node->setValue(v);
-    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
     this->m_previousPopup->updateSplashesList(offset.x, offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
+    this->m_previousPopup->checkForChanges();
     this->onClose(nullptr);
 }
 
 void EditEntriesLayer::editSplash(CCObject* sender) {
-    auto splash = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
-    auto scale = static_cast<InputNode*>(this->m_buttonMenu->getChildByID("scale"))->getString();
+    auto splash = static_cast<TextInput*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
+    auto scale = static_cast<TextInput*>(this->m_buttonMenu->getChildByID("scale"))->getString();
     if(scale.empty() || splash.empty() || scale.ends_with(".") || std::stof(scale) <= 0) {
         return FLAlertLayer::create(
             "Error!",
@@ -200,9 +209,9 @@ void EditEntriesLayer::editSplash(CCObject* sender) {
     v_an.push_back(scale);
     v.at(this->m_index) = v_an;
     this->m_node->setValue(v);
-    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", v);
     this->m_previousPopup->updateSplashesList(offset.x, offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
+    this->m_previousPopup->checkForChanges();
     this->onClose(nullptr);
 }
 

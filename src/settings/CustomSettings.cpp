@@ -8,6 +8,7 @@
 
 #include "../layers/SplashesListPopup.h"
 #include "../layers/EditEntriesLayer.h"
+#include "../main.h"
 
 using namespace geode::prelude;
 
@@ -69,8 +70,7 @@ bool ArrayListNode::hasUncommittedChanges() {
 // Geode calls this to query if the setting has a value that is 
 // different from its default value
 bool ArrayListNode::hasNonDefaultValue() {
-    // todo
-    return false;
+    return m_unsavedArray != default_splashes;
 }
 
 std::vector<std::vector<std::string>> ArrayListNode::getValue() {

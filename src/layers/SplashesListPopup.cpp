@@ -14,7 +14,7 @@ SplashesListPopup* SplashesListPopup::create(ArrayListNode* node) {
 }
 
 bool SplashesListPopup::setup(ArrayListNode* node) {
-    this->setZOrder(150);
+    this->setZOrder(250);
 
     this->setTitle("Splashes");
 
@@ -44,7 +44,19 @@ bool SplashesListPopup::setup(ArrayListNode* node) {
     deleteAllBtn->setPositionX(-155.f);
     deleteAllBtn->setPositionY(-130.f);
 
+    auto resetBtn_spr = ButtonSprite::create("Reset", 0, false, "goldFont.fnt", "GJ_button_05.png", 30.f, 0.7f);
+    resetBtn_spr->setScale(0.7);
+    this->m_resetBtn = CCMenuItemSpriteExtra::create(
+        resetBtn_spr,
+        this,
+        menu_selector(SplashesListPopup::resetSplashes)
+    );
+    this->m_resetBtn->setPositionY(-130.f);
+
+    this->checkForChanges();
+
     this->m_buttonMenu->addChild(addBtn);
+    this->m_buttonMenu->addChild(this->m_resetBtn);
     this->m_buttonMenu->addChild(deleteAllBtn);
     return true;
 }
@@ -79,6 +91,7 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
                 this->m_node->setValue(v);
                 this->updateSplashesList(offset.x, offset.y, 320, 225);
                 this->m_node->dispatchChangedPublic();
+                this->checkForChanges();
             } 
         }
     );
@@ -187,7 +200,32 @@ void SplashesListPopup::deleteAllSplashes(CCObject* sender) {
                 this->m_node->setValue(v);
                 this->m_node->dispatchChangedPublic();
                 this->updateSplashesList(offset.x, offset.y, 320, 225);
+                this->checkForChanges();
             }
         }
     );
+}
+
+void SplashesListPopup::resetSplashes(CCObject* sender) {
+    geode::createQuickPopup(
+        "Info",
+        "Are you sure?",
+        "Yes", "No",
+        [this, sender](auto, bool btn2) {
+            if(!btn2) {
+                this->m_node->setValue(default_splashes);
+                this->m_node->dispatchChangedPublic();
+                this->updateSplashesList(offset.x, offset.y, 320, 225);
+                this->checkForChanges();
+            }
+        }
+    );
+}
+
+void SplashesListPopup::checkForChanges() {
+    if(this->m_node->hasNonDefaultValue()) {
+        this->m_resetBtn->setVisible(true);
+    } else {
+        this->m_resetBtn->setVisible(false);
+    }
 }
