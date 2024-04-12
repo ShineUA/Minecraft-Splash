@@ -267,8 +267,8 @@ void EditEntriesLayer::ScaleInputDelegate::textChanged(CCTextInputNode* p0) {
         if(!dis_anim) {
             static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->stopActionByTag(1);
 			static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
-				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel + Mod::get()->getSettingValue<double>("animation-scale")),
-				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->getScale() + Mod::get()->getSettingValue<double>("animation-scale")),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->getScale()),
 				nullptr
 			)))->setTag(1);
 		}
@@ -290,8 +290,8 @@ void EditEntriesLayer::ScaleInputDelegate::textChanged(CCTextInputNode* p0) {
         if(!dis_anim) {
             static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->stopActionByTag(1);
 			static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
-				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel + Mod::get()->getSettingValue<double>("animation-scale")),
-				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->getScale() + Mod::get()->getSettingValue<double>("animation-scale")),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->getScale()),
 				nullptr
 			)))->setTag(1);
 		}
