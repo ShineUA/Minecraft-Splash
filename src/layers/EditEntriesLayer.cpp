@@ -68,7 +68,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 
 #ifdef GEODE_IS_MACOS
         if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
-			splash->runAction(CCRepeatForever::create(CCSequence::create(
+			this->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
 				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1)) + Mod::get()->getSettingValue<double>("animation-scale")),
 				return cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1))),
 				nullptr
@@ -151,7 +151,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 
 #ifdef GEODE_IS_MACOS
         if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
-			splash->runAction(CCRepeatForever::create(CCSequence::create(
+			this->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
 				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1)) + Mod::get()->getSettingValue<double>("animation-scale")),
 				return cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1))),
 				nullptr
