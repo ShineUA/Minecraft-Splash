@@ -3,7 +3,7 @@
 
 using namespace geode::prelude;
 
-#if !defined GEODE_IS_MAC
+#if !defined GEODE_IS_MACOS
 class Easings {
     public:
         static cocos2d::CCActionInterval* returnEasingIn(int num);

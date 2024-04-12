@@ -3,7 +3,7 @@
 #include <string>
 
 
-#if !defined GEODE_IS_MAC
+#if !defined GEODE_IS_MACOS
 CCActionInterval* Easings::returnEasingIn(int num) {
     auto animation_length = Mod::get()->getSettingValue<double>("animation-length");
     auto splashes_vector = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector");
