@@ -72,7 +72,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1)) + Mod::get()->getSettingValue<double>("animation-scale")),
 				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1))),
 				nullptr
-			)));
+			)))->setTag(1);
 		}
 #else
         CCActionInterval* inEasing = EasingsPreview::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"), this->m_previewLabel);
@@ -155,7 +155,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1)) + Mod::get()->getSettingValue<double>("animation-scale")),
 				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1))),
 				nullptr
-			)));
+			)))->setTag(1);
 		}
 #else
         CCActionInterval* inEasing = EasingsPreview::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"), this->m_previewLabel);
@@ -263,6 +263,16 @@ void EditEntriesLayer::ScaleInputDelegate::textChanged(CCTextInputNode* p0) {
     } else {
         if(scale > 0.f) {
             static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setScale(scale);
+#ifdef GEODE_IS_MACOS
+        if(!dis_anim) {
+            static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->stopActionByTag(1);
+			static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel + Mod::get()->getSettingValue<double>("animation-scale")),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel),
+				nullptr
+			)))->setTag(1);
+		}
+#else
             if(!dis_anim) {
                 static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->stopActionByTag(1);
                 CCActionInterval* inEasing = EasingsPreview::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel);
@@ -273,8 +283,19 @@ void EditEntriesLayer::ScaleInputDelegate::textChanged(CCTextInputNode* p0) {
                     nullptr
                 )))->setTag(1);
             }
+#endif
         } else {
             static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setScale(static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_defaultPreviewScale);
+#ifdef GEODE_IS_MACOS
+        if(!dis_anim) {
+            static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->stopActionByTag(1);
+			static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel + Mod::get()->getSettingValue<double>("animation-scale")),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel),
+				nullptr
+			)))->setTag(1);
+		}
+#else
             if(!dis_anim) {
                 static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->stopActionByTag(1);
                 CCActionInterval* inEasing = EasingsPreview::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"), static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel);
@@ -285,6 +306,7 @@ void EditEntriesLayer::ScaleInputDelegate::textChanged(CCTextInputNode* p0) {
                     nullptr
                 )))->setTag(1);
             }
+#endif
         }
     }
 }
