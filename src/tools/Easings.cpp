@@ -2,6 +2,8 @@
 #include "../main.h"
 #include <string>
 
+
+#if !defined GEODE_IS_MAC
 CCActionInterval* Easings::returnEasingIn(int num) {
     auto animation_length = Mod::get()->getSettingValue<double>("animation-length");
     auto splashes_vector = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector");
@@ -271,3 +273,5 @@ CCActionInterval* EasingsPreview::returnEasingOut(int num, CCLabelBMFont* label)
             break;
 	}
 }
+
+#endif

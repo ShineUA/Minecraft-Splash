@@ -3,6 +3,7 @@
 
 using namespace geode::prelude;
 
+#if !defined GEODE_IS_MAC
 class Easings {
     public:
         static cocos2d::CCActionInterval* returnEasingIn(int num);
@@ -14,3 +15,4 @@ class EasingsPreview {
         static cocos2d::CCActionInterval* returnEasingIn(int num, cocos2d::CCLabelBMFont* label);
         static cocos2d::CCActionInterval* returnEasingOut(int num, cocos2d::CCLabelBMFont* label);
 };
+#endif

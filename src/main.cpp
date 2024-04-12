@@ -125,6 +125,15 @@ class $modify(MenuLayer) {
 		auto size = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][1];
 		splash->setScale(std::stof((size)));
 
+#ifdef GEODE_IS_MACOS
+		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
+			splash->runAction(CCRepeatForever::create(CCSequence::create(
+				cocos2d::CCScaleTo::create(animation_length, std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1)) + Mod::get()->getSettingValue<double>("animation-scale"));,
+				return cocos2d::CCScaleTo::create(animation_length, std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1)));,
+				nullptr
+			)));
+		}
+#else
 		CCActionInterval* inEasing = Easings::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"));
 		CCActionInterval* outEasing = Easings::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"));
 
@@ -135,6 +144,7 @@ class $modify(MenuLayer) {
 				nullptr
 			)));
 		}
+#endif
 		
 		splash->setZOrder(15);
 		splash->setID("minecraft-splash");
