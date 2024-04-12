@@ -146,11 +146,12 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
         item_arr->addObject(item_node);
         item_menu->updateLayout();
     }
-
+#if !defined GEODE_IS_MACOS
     auto splash_list_bg = CCLayerColor::create();
     splash_list_bg->setOpacity(75);
     splash_list_bg->setZOrder(-1);
     splash_list_bg->setContentSize(ccp(scale_x, scale_y));
+#endif
 
     auto list = ListView::create(item_arr, 40.f, scale_x, scale_y);
     list->setPosition({pos_x - (scale_x / 2), pos_y - (scale_y / 2)});
@@ -174,7 +175,9 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     splash_list_round_right->setPosition({scale_x + 9.7f, scale_y / 2});
     splash_list_round_right->setRotation(180);
     
+#if !defined GEODE_IS_MACOS
     list->addChild(splash_list_bg);
+#endif
     list->addChild(splash_list_round_top);
     list->addChild(splash_list_round_down);
     list->addChild(splash_list_round_left);
