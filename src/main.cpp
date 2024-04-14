@@ -53,8 +53,8 @@ std::vector<std::vector<std::string>> default_splashes = {
 	{"Take a break!", "0.6"},
 	{"Time to go outside...", "0.6"},
 	{"To be continued...", "0.6"},
-	{"youre going to brazil", "0.6"}
-	{"Click between frames!", "0.7"}
+	{"youre going to brazil", "0.6"},
+	{"Click between frames!", "0.7"},
 	{"Clicking between frames is only cheating if its against the rules", "0.15"}
 };
 
