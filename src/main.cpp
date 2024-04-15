@@ -55,7 +55,10 @@ std::vector<std::vector<std::string>> default_splashes = {
 	{"To be continued...", "0.6"},
 	{"youre going to brazil", "0.6"},
 	{"Click between frames!", "0.7"},
-	{"Clicking between frames is only cheating if its against the rules", "0.15"}
+	{"Clicking between frames is only cheating if its against the rules", "0.15"},
+	{"Hello, I'm Robtop...", "0.6"},
+	{"Robtop likes clicking between frames...", "0.35"},
+	{"Consider being soggy...", "0.6"}
 };
 
 int random_splash;
