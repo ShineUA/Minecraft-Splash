@@ -1,7 +1,6 @@
 #include "EditEntriesLayer.h"
 
 #include "../tools/Easings.h"
-#include <random>
 #include <Geode/ui/TextInput.hpp>
 
 EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int mode, SplashesListPopup* prev_popup) {

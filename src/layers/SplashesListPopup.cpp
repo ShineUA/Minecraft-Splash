@@ -1,6 +1,10 @@
 #include "SplashesListPopup.h"
 #include <fmt/format.h>
 #include "EditEntriesLayer.h"
+#include "Geode/binding/ButtonSprite.hpp"
+#include "Geode/cocos/label_nodes/CCLabelBMFont.h"
+#include "Geode/cocos/layers_scenes_transitions_nodes/CCLayer.h"
+#include "Geode/ui/BasedButtonSprite.hpp"
 
 extern std::vector<std::vector<std::string>> default_splashes;
 
@@ -105,10 +109,10 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     auto splash_array = this->m_node->getValue();
 
     for(int i = 0;i < splash_array.size();i++) {
-        auto item_menu = CCMenu::create();
-        item_menu->setPosition({scale_x - 40, 40.f / 2.f});
-        item_menu->setContentWidth(73);
-        item_menu->setLayout(RowLayout::create()->setAutoScale(false), false);
+        auto itemMenu = CCMenu::create();
+        itemMenu->setPosition({scale_x - 40, 40.f / 2.f});
+        itemMenu->setContentWidth(73);
+        itemMenu->setLayout(RowLayout::create()->setAutoScale(false), false);
 
         auto splash = CCLabelBMFont::create(splash_array.at(i).at(0).c_str(), "bigFont.fnt");
         splash->setScale(0.5f);
@@ -116,74 +120,70 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
         splash->setPosition({5.f, 20.f});
         splash->limitLabelWidth(scale_x - 86.f, 0.5f, 0.2f);
 
-        auto delete_spr = CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
-        auto delete_btn = CCMenuItemSpriteExtra::create(
-            delete_spr,
+        auto deleteSpr = CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
+        deleteSpr->setScale(0.8f);
+        auto deleteBtn = CCMenuItemSpriteExtra::create(
+            deleteSpr,
             this,
             menu_selector(SplashesListPopup::deleteEntry)
         );
+        deleteBtn->setID(fmt::format("{}", i).c_str());
 
-        delete_btn->m_baseScale = 0.8f;
-        delete_btn->setID(fmt::format("{}", i).c_str());
-        delete_btn->setScale(0.8f);
-
-        auto edit_spr = CCSprite::create("editBtn_001.png"_spr);
-        auto edit_btn = CCMenuItemSpriteExtra::create(
-            edit_spr,
+        auto editSprText = CCLabelBMFont::create("Edit", "bigFont.fnt");
+        auto editSpr = CircleButtonSprite::create(editSprText, CircleBaseColor::Pink);
+        editSpr->setScale(0.7f);
+        auto editBtn = CCMenuItemSpriteExtra::create(
+            editSpr,
             this,
             menu_selector(SplashesListPopup::editEntry)
         );
+        editBtn->setID(fmt::format("{}", i).c_str());
 
-        edit_btn->m_baseScale = 0.8f;
-        edit_btn->setID(fmt::format("{}", i).c_str());
-        edit_btn->setScale(0.8f);
-
-        item_menu->addChild(edit_btn);
-        item_menu->addChild(delete_btn);
+        itemMenu->addChild(editBtn);
+        itemMenu->addChild(deleteBtn);
 
         auto item_node = CCNode::create();
-
         item_node->addChild(splash);
-        item_node->addChild(item_menu);
+        item_node->addChild(itemMenu);
         item_arr->addObject(item_node);
-        item_menu->updateLayout();
+        itemMenu->updateLayout();
     }
 #if !defined GEODE_IS_MACOS
-    auto splash_list_bg = CCLayerColor::create();
-    splash_list_bg->setOpacity(75);
-    splash_list_bg->setZOrder(-1);
-    splash_list_bg->setContentSize(ccp(scale_x, scale_y));
+    auto splashListBg = CCLayerColor::create();
+    splashListBg->setOpacity(75);
+    splashListBg->setZOrder(-1);
+    splashListBg->setContentSize(ccp(scale_x, scale_y));
 #endif
 
     auto list = ListView::create(item_arr, 40.f, scale_x, scale_y);
     list->setPosition({pos_x - (scale_x / 2), pos_y - (scale_y / 2)});
     list->setID("list");
 
-    auto splash_list_round_top = CCScale9Sprite::createWithSpriteFrameName("GJ_commentTop_001.png");
-    splash_list_round_top->setContentSize(ccp(scale_x + 12.f, 22.f));
-    splash_list_round_top->setPosition({scale_x / 2, scale_y - 5});
+    auto splashListBorderTop = CCScale9Sprite::createWithSpriteFrameName("GJ_commentTop_001.png");
+    splashListBorderTop->setContentSize(ccp(scale_x + 12.f, 22.f));
+    splashListBorderTop->setPosition({scale_x / 2, scale_y - 5});
 
-    auto splash_list_round_down = CCScale9Sprite::createWithSpriteFrameName("GJ_commentTop_001.png");
-    splash_list_round_down->setContentSize(ccp(scale_x + 12.f, 22.f));
-    splash_list_round_down->setPosition({scale_x / 2, 5});
-    splash_list_round_down->setRotation(180);
+    auto splashListBorderDown = CCScale9Sprite::createWithSpriteFrameName("GJ_commentTop_001.png");
+    splashListBorderDown->setContentSize(ccp(scale_x + 12.f, 22.f));
+    splashListBorderDown->setPosition({scale_x / 2, 5});
+    splashListBorderDown->setRotation(180);
 
-    auto splash_list_round_left = CCScale9Sprite::createWithSpriteFrameName("GJ_commentSide_001.png");
-    splash_list_round_left->setContentSize(ccp(22.f, scale_y - 30.f));
-    splash_list_round_left->setPosition({-9.7f, scale_y / 2});
+    auto splashListBorderLeft = CCScale9Sprite::createWithSpriteFrameName("GJ_commentSide_001.png");
+    splashListBorderLeft->setContentSize(ccp(22.f, scale_y - 30.f));
+    splashListBorderLeft->setPosition({-9.7f, scale_y / 2});
 
-    auto splash_list_round_right = CCScale9Sprite::createWithSpriteFrameName("GJ_commentSide_001.png");
-    splash_list_round_right->setContentSize(ccp(22.f, scale_y - 30.f));
-    splash_list_round_right->setPosition({scale_x + 9.7f, scale_y / 2});
-    splash_list_round_right->setRotation(180);
+    auto splashListBorderRight = CCScale9Sprite::createWithSpriteFrameName("GJ_commentSide_001.png");
+    splashListBorderRight->setContentSize(ccp(22.f, scale_y - 30.f));
+    splashListBorderRight->setPosition({scale_x + 9.7f, scale_y / 2});
+    splashListBorderRight->setRotation(180);
     
 #if !defined GEODE_IS_MACOS
-    list->addChild(splash_list_bg);
+    list->addChild(splashListBg);
 #endif
-    list->addChild(splash_list_round_top);
-    list->addChild(splash_list_round_down);
-    list->addChild(splash_list_round_left);
-    list->addChild(splash_list_round_right);
+    list->addChild(splashListBorderTop);
+    list->addChild(splashListBorderDown);
+    list->addChild(splashListBorderLeft);
+    list->addChild(splashListBorderRight);
     this->m_mainLayer->addChild(list);
 }
 
@@ -229,8 +229,8 @@ void SplashesListPopup::resetSplashes(CCObject* sender) {
 
 void SplashesListPopup::checkForChanges() {
     if(this->m_node->hasNonDefaultValue()) {
-        this->m_resetBtn->m_bEnabled = true;
+        this->m_resetBtn->setVisible(true);
     } else {
-        this->m_resetBtn->m_bEnabled = false;
+        this->m_resetBtn->setVisible(false);
     }
 }

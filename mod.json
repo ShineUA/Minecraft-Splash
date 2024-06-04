@@ -11,11 +11,6 @@
 	"developer": "ShineUA",
 	"description": "Adds the splash text from Minecraft",
 	"repository": "https://github.com/ShineUA/minecraft-splash-mod-geode",
-	"resources": {
-		"sprites": [
-			"resources/sprites/*.png"
-		]
-	},
 	"settings": {
 		"label-label": {
 			"name": "Label Settings",
