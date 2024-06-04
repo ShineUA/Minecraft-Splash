@@ -3,7 +3,9 @@
 #include <vector>
 #include <matjson/stl_serialize.hpp>
 #include <random>
-#include "../main.h"
+#include <Geode/Bindings.hpp>
+#include <string>
+#include <cstring>
 
 using namespace geode::prelude;
 

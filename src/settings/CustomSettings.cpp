@@ -1,16 +1,9 @@
 #include "CustomSettings.h"
 
-#include <Geode/Bindings.hpp>
-#include <string>
-#include <cstring>
-
-#pragma once
-
 #include "../layers/SplashesListPopup.h"
-#include "../layers/EditEntriesLayer.h"
-#include "../main.h"
 
-using namespace geode::prelude;
+extern int splashIndex;
+extern std::vector<std::vector<std::string>> default_splashes;
 
 SettingNode* ArrayListValue::createNode(float width) {
     return ArrayListNode::create(this, width);
@@ -51,12 +44,12 @@ void ArrayListNode::commit() {
     static_cast<ArrayListValue*>(m_value)->setArray(this->getValue());
     Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector",  static_cast<ArrayListValue*>(m_value)->getArray());
     if(static_cast<ArrayListValue*>(m_value)->getArray().size() == 1) {
-        random_splash = 0;
+        splashIndex = 0;
     } else {
         std::random_device rd; 
         std::mt19937 gen(rd()); 
         std::uniform_int_distribution<std::mt19937::result_type> distr(0, static_cast<ArrayListValue*>(m_value)->getArray().size() - 1); 
-        random_splash = distr(gen);
+        splashIndex = distr(gen);
     }
     this->dispatchCommitted();
 }

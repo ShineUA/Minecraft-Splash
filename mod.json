@@ -1,11 +1,11 @@
 {
-	"geode": "2.0.0-beta.23",
+	"geode": "2.0.0-beta.27",
 	"gd": {
-		"win": "2.204",
-		"android": "2.205",
-		"mac": "2.200"
+		"win": "2.206",
+		"android": "2.206",
+		"mac": "2.206"
 	},
-	"version": "v1.3.1",
+	"version": "v1.3.2",
 	"id": "shineua.minecraft_splash",
 	"name": "Minecraft Splash",
 	"developer": "ShineUA",

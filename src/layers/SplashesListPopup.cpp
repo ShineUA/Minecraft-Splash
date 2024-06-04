@@ -2,6 +2,8 @@
 #include <fmt/format.h>
 #include "EditEntriesLayer.h"
 
+extern std::vector<std::vector<std::string>> default_splashes;
+
 SplashesListPopup* SplashesListPopup::create(ArrayListNode* node) {
     SplashesListPopup* ret = new SplashesListPopup();
     if (ret && ret->init(435.f, 300.f, node)) {
@@ -227,8 +229,8 @@ void SplashesListPopup::resetSplashes(CCObject* sender) {
 
 void SplashesListPopup::checkForChanges() {
     if(this->m_node->hasNonDefaultValue()) {
-        this->m_resetBtn->setVisible(true);
+        this->m_resetBtn->m_bEnabled = true;
     } else {
-        this->m_resetBtn->setVisible(false);
+        this->m_resetBtn->m_bEnabled = false;
     }
 }

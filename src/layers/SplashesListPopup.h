@@ -1,8 +1,4 @@
-#include <Geode/Bindings.hpp>
-#include <string>
-
 #pragma once
-
 #include "../settings/CustomSettings.h"
 
 using namespace geode::prelude;

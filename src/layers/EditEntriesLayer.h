@@ -1,8 +1,6 @@
-#include <Geode/Bindings.hpp>
-#include <string>
-
 #pragma once
 
+#include <string>
 #include "../settings/CustomSettings.h"
 #include "SplashesListPopup.h"
 
