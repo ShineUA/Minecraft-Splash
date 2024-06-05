@@ -16,89 +16,75 @@ EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int m
 
 bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesListPopup* prev_popup) {
     this->m_node = node;
-
     this->m_previousPopup = prev_popup;
-
     this->setZOrder(300);
     this->m_index = index;
-
-    auto label_input = TextInput::create(300, "Splash Text", "bigFont.fnt");
-    label_input->setFilter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,'.!?0123456789 ");
-    label_input->setMaxCharCount(40);
-    label_input->setPosition({offset.x, offset.y + 85});
-    label_input->setID("splash-text");
-
-    auto scale_input = TextInput::create(50, "Scale", "bigFont.fnt");
-    scale_input->setFilter("0123456789.");
-    scale_input->setMaxCharCount(4);
-    scale_input->getInputNode()->setLabelPlaceholderScale(0.4);
-    scale_input->getInputNode()->setMaxLabelScale(0.5);
-    scale_input->setPosition({offset.x, offset.y + 50});
-    scale_input->setScale(0.8);
-    scale_input->setID("scale");
-
-    auto preview_bg = CCScale9Sprite::create("GJ_square05.png");
-    preview_bg->setPosition({offset.x, offset.y - 50.f});
-    preview_bg->setContentSize(ccp(205, 100));
-
-    auto preview_tip = CCLabelBMFont::create("Tip: The text shouldn't extend\nbeyond the edges of the square", "bigFont.fnt");
-    preview_tip->setScale(0.35f);
-    preview_tip->setOpacity(150);
-    preview_tip->setPosition({offset.x, offset.y + 15.f});
-
+    auto labelInput = TextInput::create(300, "Splash Text", "bigFont.fnt");
+    labelInput->setFilter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,'.!?0123456789 ");
+    labelInput->setMaxCharCount(40);
+    labelInput->setPosition({offset.x, offset.y + 85});
+    labelInput->setID("splash-text");
+    auto scaleInput = TextInput::create(50, "Scale", "bigFont.fnt");
+    scaleInput->setFilter("0123456789.");
+    scaleInput->setMaxCharCount(4);
+    scaleInput->getInputNode()->setLabelPlaceholderScale(0.4);
+    scaleInput->getInputNode()->setMaxLabelScale(0.5);
+    scaleInput->setPosition({offset.x, offset.y + 50});
+    scaleInput->setScale(0.8);
+    scaleInput->setID("scale");
+    auto previewBg = CCScale9Sprite::create("GJ_square05.png");
+    previewBg->setPosition({offset.x, offset.y - 50.f});
+    previewBg->setContentSize(ccp(205, 100));
+    auto previewTip = CCLabelBMFont::create("Tip: The text shouldn't extend\nbeyond the edges of the square", "bigFont.fnt");
+    previewTip->setScale(0.35f);
+    previewTip->setOpacity(150);
+    previewTip->setPosition({offset.x, offset.y + 15.f});
     this->m_previewLabel = CCLabelBMFont::create(fmt::format("{}", this->m_defaultPreviewPlaceholder).c_str(), "goldFont.fnt");
-    this->m_previewLabel->setPosition(preview_bg->getPosition());
+    this->m_previewLabel->setPosition(previewBg->getPosition());
     this->m_previewLabel->setScale(this->m_defaultPreviewScale);
-
     if(Mod::get()->getSettingValue<bool>("new-appearance")) {
         this->m_previewLabel->setRotation(-15.f);
     } else {
         this->m_previewLabel->setRotation(-9.f);
     }
-
-    this->m_mainLayer->addChild(preview_bg);
-    this->m_mainLayer->addChild(preview_tip);
+    this->m_mainLayer->addChild(previewBg);
+    this->m_mainLayer->addChild(previewTip);
     this->m_mainLayer->addChild(this->m_previewLabel);
-
-    this->m_buttonMenu->addChild(label_input);
-    this->m_buttonMenu->addChild(scale_input);
-
+    this->m_buttonMenu->addChild(labelInput);
+    this->m_buttonMenu->addChild(scaleInput);
     if(mode == 0) {
         this->setTitle("Add Splash", "goldFont.fnt", 1);
-        auto add_spr = ButtonSprite::create("Add");
-        auto add_btn = CCMenuItemSpriteExtra::create(
-            add_spr,
+        auto addSpr = ButtonSprite::create("Add");
+        auto addBtn = CCMenuItemSpriteExtra::create(
+            addSpr,
             this,
             menu_selector(EditEntriesLayer::addSplash)
         );
-        add_btn->setPosition({offset.x, offset.y + -120});
-        this->m_buttonMenu->addChild(add_btn);
+        addBtn->setPosition({offset.x, offset.y + -120});
+        this->m_buttonMenu->addChild(addBtn);
     } else if(mode == 1) {
         // auto edit_label = CCLabelBMFont::create("Edit Splash", "goldFont.fnt");
         // edit_label->setPosition({offset.x, offset.y + 65 + 60});
         this->setTitle("Edit Splash", "goldFont.fnt", 1);
-        label_input->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
-        scale_input->setString(this->m_node->getValue().at(this->m_index).at(1).c_str());
-
+        labelInput->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
+        scaleInput->setString(this->m_node->getValue().at(this->m_index).at(1).c_str());
         this->m_previewLabel->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
         this->m_previewLabel->setScale(std::stof(this->m_node->getValue().at(this->m_index).at(1).c_str()));
-
-        auto edit_spr = ButtonSprite::create("Edit");
-        auto edit_btn = CCMenuItemSpriteExtra::create(
-            edit_spr,
+        auto editSpr = ButtonSprite::create("Edit");
+        auto editBtn = CCMenuItemSpriteExtra::create(
+            editSpr,
             this,
             menu_selector(EditEntriesLayer::editSplash)
         );
-        edit_btn->setPosition({offset.x, offset.y + -120});
-
-        this->m_buttonMenu->addChild(edit_btn);
+        editBtn->setPosition({offset.x, offset.y + -120});
+        this->m_buttonMenu->addChild(editBtn);
     } else {
         this->keyBackClicked();
     }
-    auto splash_delegate = new EditEntriesLayer::SplashInputDelegate();
-    label_input->getInputNode()->setDelegate(splash_delegate);
-    auto scale_delegate = new EditEntriesLayer::ScaleInputDelegate();
-    scale_input->getInputNode()->setDelegate(scale_delegate);
+    auto splashDelegate = new EditEntriesLayer::SplashInputDelegate();
+    labelInput->getInputNode()->setDelegate(splashDelegate);
+    auto scaleDelegate = new EditEntriesLayer::ScaleInputDelegate();
+    scaleInput->getInputNode()->setDelegate(scaleDelegate);
 #ifdef GEODE_IS_MACOS
     if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
         this->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
