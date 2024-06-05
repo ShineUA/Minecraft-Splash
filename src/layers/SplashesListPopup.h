@@ -5,7 +5,7 @@ using namespace geode::prelude;
 
 class SplashesListPopup : public geode::Popup<ArrayListNode*> {
     protected:
-        const cocos2d::CCPoint offset = cocos2d::CCDirector::sharedDirector()->getWinSize() / 2;
+        const cocos2d::CCPoint offset = {435.f / 2, 300.f / 2};
         ArrayListNode* m_node;
         CCMenuItemSpriteExtra* m_resetBtn;
         virtual bool setup(ArrayListNode* node) override;

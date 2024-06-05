@@ -10,7 +10,7 @@ extern std::vector<std::vector<std::string>> default_splashes;
 
 SplashesListPopup* SplashesListPopup::create(ArrayListNode* node) {
     SplashesListPopup* ret = new SplashesListPopup();
-    if (ret && ret->init(435.f, 300.f, node)) {
+    if (ret && ret->initAnchored(435.f, 300.f, node)) {
         ret->autorelease();
     } else {
         delete ret;
@@ -21,13 +21,9 @@ SplashesListPopup* SplashesListPopup::create(ArrayListNode* node) {
 
 bool SplashesListPopup::setup(ArrayListNode* node) {
     this->setZOrder(250);
-
     this->setTitle("Splashes");
-
     this->m_node = node;
-
     auto item_arr = CCArray::create();
-
     this->setupSplashesList(offset.x, offset.y, 320, 225);
 
     auto addBtn_spr = ButtonSprite::create("Add Splash", 0, false, "goldFont.fnt", "GJ_button_05.png", 30.f, 0.7f);
@@ -37,8 +33,7 @@ bool SplashesListPopup::setup(ArrayListNode* node) {
         this,
         menu_selector(SplashesListPopup::addEntry)
     );
-    addBtn->setPositionX(155.f);
-    addBtn->setPositionY(-130.f);
+    addBtn->setPosition({offset.x + 155.f, offset.y + -130.f});
 
     auto deleteAllBtn_spr = ButtonSprite::create("Remove All", 0, false, "goldFont.fnt", "GJ_button_05.png", 30.f, 0.7f);
     deleteAllBtn_spr->setScale(0.7);
@@ -47,8 +42,7 @@ bool SplashesListPopup::setup(ArrayListNode* node) {
         this,
         menu_selector(SplashesListPopup::deleteAllSplashes)
     );
-    deleteAllBtn->setPositionX(-155.f);
-    deleteAllBtn->setPositionY(-130.f);
+    deleteAllBtn->setPosition({offset.x + -155.f, offset.y + -130.f});
 
     auto resetBtn_spr = ButtonSprite::create("Reset", 0, false, "goldFont.fnt", "GJ_button_05.png", 30.f, 0.7f);
     resetBtn_spr->setScale(0.7);
@@ -57,7 +51,7 @@ bool SplashesListPopup::setup(ArrayListNode* node) {
         this,
         menu_selector(SplashesListPopup::resetSplashes)
     );
-    this->m_resetBtn->setPositionY(-130.f);
+    this->m_resetBtn->setPosition({offset.x, offset.y + -130.f});
 
     this->checkForChanges();
 
