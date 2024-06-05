@@ -8,7 +8,7 @@ using namespace geode::prelude;
 
 class EditEntriesLayer : public geode::Popup<ArrayListNode*, int, int, SplashesListPopup*> {
     protected:
-    const CCPoint offset = {435.f / 2, 285.f / 2};
+        const CCPoint offset = {435.f / 2, 285.f / 2};
         ArrayListNode* m_node;
         SplashesListPopup* m_previousPopup;
         int m_index;

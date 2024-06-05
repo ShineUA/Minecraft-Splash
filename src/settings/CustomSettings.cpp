@@ -16,7 +16,8 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
     this->setValue(value->getArray());
     this->setContentSize({ width, 40.f });
     auto ccmenu = CCMenu::create();
-    auto spr = ButtonSprite::create("Edit Splashes");
+    ButtonSprite* spr;
+    spr = ButtonSprite::create("Edit Splashes", "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png");
     auto btn = CCMenuItemSpriteExtra::create(
         spr, this, menu_selector(ArrayListNode::createPopup)
     );

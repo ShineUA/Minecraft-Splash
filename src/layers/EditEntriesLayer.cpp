@@ -5,7 +5,7 @@
 
 EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int mode, SplashesListPopup* prev_popup) {
     EditEntriesLayer* ret = new EditEntriesLayer();
-    if (ret && ret->initAnchored(435.f, 285.f, node, index, mode, prev_popup)) {
+    if (ret && ret->initAnchored(435.f, 285.f, node, index, mode, prev_popup, Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_square01.png" : "GJ_square01.png")) {
         ret->autorelease();
     } else {
         delete ret;
@@ -19,6 +19,8 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
     this->m_previousPopup = prev_popup;
     this->setZOrder(300);
     this->m_index = index;
+    if(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme")) this->m_closeBtn->setSprite(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.85f, CircleBaseColor::DarkPurple));
+    else this->m_closeBtn->setSprite(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.85f, CircleBaseColor::Green));
     auto labelInput = TextInput::create(300, "Splash Text", "bigFont.fnt");
     labelInput->setFilter("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,'.!?0123456789 ");
     labelInput->setMaxCharCount(40);
@@ -54,7 +56,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
     this->m_buttonMenu->addChild(scaleInput);
     if(mode == 0) {
         this->setTitle("Add Splash", "goldFont.fnt", 1);
-        auto addSpr = ButtonSprite::create("Add");
+        auto addSpr = ButtonSprite::create("Add", "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png");
         auto addBtn = CCMenuItemSpriteExtra::create(
             addSpr,
             this,
@@ -70,7 +72,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
         scaleInput->setString(this->m_node->getValue().at(this->m_index).at(1).c_str());
         this->m_previewLabel->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
         this->m_previewLabel->setScale(std::stof(this->m_node->getValue().at(this->m_index).at(1).c_str()));
-        auto editSpr = ButtonSprite::create("Edit");
+        auto editSpr = ButtonSprite::create("Edit", "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png");
         auto editBtn = CCMenuItemSpriteExtra::create(
             editSpr,
             this,
@@ -125,7 +127,7 @@ void EditEntriesLayer::addSplash(CCObject* sender) {
     v_an.push_back(scale);
     v.push_back(v_an);
     this->m_node->setValue(v);
-    this->m_previousPopup->updateSplashesList(offset.x, offset.y, 320, 225);
+    this->m_previousPopup->updateSplashesList(this->m_previousPopup->offset.x, this->m_previousPopup->offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
     this->m_previousPopup->checkForChanges();
     this->onClose(nullptr);
@@ -147,7 +149,7 @@ void EditEntriesLayer::editSplash(CCObject* sender) {
     v_an.push_back(scale);
     v.at(this->m_index) = v_an;
     this->m_node->setValue(v);
-    this->m_previousPopup->updateSplashesList(offset.x, offset.y, 320, 225);
+    this->m_previousPopup->updateSplashesList(this->m_previousPopup->offset.x, this->m_previousPopup->offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
     this->m_previousPopup->checkForChanges();
     this->onClose(nullptr);

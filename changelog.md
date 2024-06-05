@@ -1,3 +1,9 @@
+# v1.3.2
+
+- Deleted some splashes.
+- Migrated from `init()` to `initAnchored()`.
+- Added new Geode Theme support.
+
 # v1.3.1
 
 - Added 5 splashes.

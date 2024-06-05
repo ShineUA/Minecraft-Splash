@@ -1,5 +1,5 @@
 {
-	"geode": "2.0.0-beta.27",
+	"geode": "3.0.0-alpha.1",
 	"gd": {
 		"win": "2.206",
 		"android": "2.206",
@@ -11,6 +11,9 @@
 	"developer": "ShineUA",
 	"description": "Adds the splash text from Minecraft",
 	"repository": "https://github.com/ShineUA/minecraft-splash-mod-geode",
+	"resources": {
+		"files": []
+	},
 	"settings": {
 		"label-label": {
 			"name": "Label Settings",
