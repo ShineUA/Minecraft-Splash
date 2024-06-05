@@ -26,32 +26,21 @@ class $modify(MenuLayer) {
 			}
 			onOpenRandom = true;
 		}
-
 		auto splash = CCLabelBMFont::create(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[splashIndex][0].c_str(), "goldFont.fnt");
 		splash->setScale(std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[splashIndex][1]));
-		auto winSize = CCDirector::get()->getWinSize();
-		auto density = winSize.width / winSize.height;
-		float posX;
-		float posY;
-
 		if(Mod::get()->getSettingValue<bool>("new-appearance")){
-			posX = this->getChildByID("main-title")->getPositionX() + 167.f;
-			posY = this->getChildByID("main-title")->getPositionY() - 11.f;
+			splash->setPosition({this->getChildByID("main-title")->getPositionX() + 167.f, this->getChildByID("main-title")->getPositionY() - 11.f});
 			splash->setRotation(-15.f);
 		} else {
-			if(density < 1.7f && density >= 1.5f) {
-				posX = winSize.width / 2 + 154.f;
-				posY = winSize.height / 2 + 73.f;
-			} else if(density < 1.5f) {
-				posX = winSize.width / 2 + 132.f;
-				posY = winSize.height / 2 + 86.f;
+			if(CCDirector::get()->getWinSize().width / CCDirector::get()->getWinSize().height < 1.7f && CCDirector::get()->getWinSize().width / CCDirector::get()->getWinSize().height >= 1.5f) {
+				splash->setPosition({CCDirector::get()->getWinSize().width / 2 + 154.f, CCDirector::get()->getWinSize().height / 2 + 73.f});
+			} else if(CCDirector::get()->getWinSize().width / CCDirector::get()->getWinSize().height < 1.5f) {
+				splash->setPosition({CCDirector::get()->getWinSize().width / 2 + 132.f, CCDirector::get()->getWinSize().height / 2 + 86.f});
 			} else {
-				posX = winSize.width / 2 + 183.f;
-				posY = winSize.height / 2 + 71.f;
+				splash->setPosition({CCDirector::get()->getWinSize().width / 2 + 183.f, CCDirector::get()->getWinSize().height / 2 + 71.f});
 			}
 			splash->setRotation(-9.f);
 		}
-
 #ifdef GEODE_IS_MACOS
 		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
 			splash->runAction(CCRepeatForever::create(CCSequence::create(
@@ -63,7 +52,6 @@ class $modify(MenuLayer) {
 #else
 		CCActionInterval* inEasing = Easings::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"));
 		CCActionInterval* outEasing = Easings::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"));
-
 		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
 			splash->runAction(CCRepeatForever::create(CCSequence::create(
 				inEasing,
@@ -72,15 +60,12 @@ class $modify(MenuLayer) {
 			)));
 		}
 #endif
-		
 		splash->setZOrder(15);
 		splash->setID("minecraft-splash");
-		splash->setPosition(posX, posY);
 		addChild(splash);
 		return true;
 	}
 };
-
 class $modify(PauseLayer) {
 	void onQuit(CCObject* sender) {
 		if(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size() == (size_t)1) {

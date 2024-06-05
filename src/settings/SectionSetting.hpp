@@ -40,21 +40,14 @@ protected:
             menu_selector(SectionSettingNode::onInfoBtn)
         );
         infoBtn->setPositionX(theLabel->getContentWidth() / 4 + 10);
-
         theLabel->setScale(.5);
         theLabel->setPositionX(0);
-
         if(!m_description.empty()) {
             theMenu->addChild(infoBtn);
         }
-
         theMenu->addChild(theLabel);
         theMenu->setPosition(width / 2, 20.f);
-        
         this->addChild(theMenu);
-
-
-
         return true;
     }
     void onInfoBtn(cocos2d::CCObject* sender) {
@@ -72,7 +65,6 @@ public:
         return true;
     }
     void resetToDefault() override {}
-
     static SectionSettingNode* create(SectionSettingValue* value, float width) {
         auto ret = new SectionSettingNode();
         if (ret && ret->init(value, width)) {
