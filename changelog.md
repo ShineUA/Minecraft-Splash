@@ -4,6 +4,8 @@
 - Migrated from `init()` to `initAnchored()`.
 - Migrated from `ListView` class to `ScrollLayer`.
 - Added new Geode Theme support.
+- Added a way to support me.
+- Updated mod's description.
 
 # v1.3.1
 
