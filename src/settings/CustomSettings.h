@@ -5,7 +5,6 @@
 #include <random>
 #include <Geode/Bindings.hpp>
 #include <string>
-#include <cstring>
 
 using namespace geode::prelude;
 

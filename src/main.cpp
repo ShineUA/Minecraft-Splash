@@ -2,7 +2,7 @@
 
 $on_mod(Loaded) {
     Mod::get()->addCustomSetting<ArrayListValue>("splashes", default_splashes);
-	Mod::get()->addCustomSetting<SectionSettingValue>("label-label", "none");
+	Mod::get()->addCustomSetting<SectionSettingValue>("main-label", "none");
 	Mod::get()->addCustomSetting<SectionSettingValue>("splashes-label", "none");
 }
 

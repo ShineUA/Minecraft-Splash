@@ -41,7 +41,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
     previewTip->setScale(0.35f);
     previewTip->setOpacity(150);
     previewTip->setPosition({offset.x, offset.y + 15.f});
-    this->m_previewLabel = CCLabelBMFont::create(fmt::format("{}", this->m_defaultPreviewPlaceholder).c_str(), "goldFont.fnt");
+    this->m_previewLabel = CCLabelBMFont::create(this->m_defaultPreviewPlaceholder.c_str(), "goldFont.fnt");
     this->m_previewLabel->setPosition(previewBg->getPosition());
     this->m_previewLabel->setScale(this->m_defaultPreviewScale);
     if(Mod::get()->getSettingValue<bool>("new-appearance")) this->m_previewLabel->setRotation(-15.f);
@@ -150,8 +150,8 @@ void EditEntriesLayer::editSplash(CCObject* sender) {
 
 void EditEntriesLayer::SplashInputDelegate::textChanged(CCTextInputNode* p0) {
     std::string string = p0->getString();
-    if(string.empty()) static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(fmt::format("{}", static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_defaultPreviewPlaceholder).c_str());
-    else static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(fmt::format("{}", string).c_str());
+    if(string.empty()) static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_defaultPreviewPlaceholder.c_str());
+    else static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(string.c_str());
 }
 
 void EditEntriesLayer::ScaleInputDelegate::textChanged(CCTextInputNode* p0) {

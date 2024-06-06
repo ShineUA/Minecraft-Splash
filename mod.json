@@ -12,10 +12,10 @@
 	"description": "Adds the splash text from Minecraft",
 	"repository": "https://github.com/ShineUA/minecraft-splash-mod-geode",
 	"resources": {
-		"files": []
+		"files": ["screenshots/*.png"]
 	},
 	"settings": {
-		"label-label": {
+		"main-label": {
 			"name": "Label Settings",
 			"description": "Customization settings for label.",
 			"type": "custom"

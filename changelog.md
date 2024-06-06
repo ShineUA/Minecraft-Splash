@@ -2,13 +2,12 @@
 
 - Deleted some splashes.
 - Migrated from `init()` to `initAnchored()`.
+- Migrated from `ListView` class to `ScrollLayer`.
 - Added new Geode Theme support.
 
 # v1.3.1
 
 - Added 5 splashes.
-
-### This is the penultimate update.
 
 # v1.3.0
 
@@ -17,7 +16,7 @@
 # v1.2.8
 
 - Fixed crash.
-- Added "Reset" button in `SplashesListPopup`.
+- Added `Reset` button in `SplashesListPopup`.
 
 # v1.2.7
 
