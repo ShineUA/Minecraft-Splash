@@ -44,11 +44,8 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
     this->m_previewLabel = CCLabelBMFont::create(fmt::format("{}", this->m_defaultPreviewPlaceholder).c_str(), "goldFont.fnt");
     this->m_previewLabel->setPosition(previewBg->getPosition());
     this->m_previewLabel->setScale(this->m_defaultPreviewScale);
-    if(Mod::get()->getSettingValue<bool>("new-appearance")) {
-        this->m_previewLabel->setRotation(-15.f);
-    } else {
-        this->m_previewLabel->setRotation(-9.f);
-    }
+    if(Mod::get()->getSettingValue<bool>("new-appearance")) this->m_previewLabel->setRotation(-15.f);
+    else this->m_previewLabel->setRotation(-9.f);
     this->m_mainLayer->addChild(previewBg);
     this->m_mainLayer->addChild(previewTip);
     this->m_mainLayer->addChild(this->m_previewLabel);
@@ -80,9 +77,7 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
         );
         editBtn->setPosition({offset.x, offset.y + -120});
         this->m_buttonMenu->addChild(editBtn);
-    } else {
-        this->keyBackClicked();
-    }
+    } else this->keyBackClicked();
     auto splashDelegate = new EditEntriesLayer::SplashInputDelegate();
     labelInput->getInputNode()->setDelegate(splashDelegate);
     auto scaleDelegate = new EditEntriesLayer::ScaleInputDelegate();
@@ -112,7 +107,6 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
 void EditEntriesLayer::addSplash(CCObject* sender) {
     auto splash = static_cast<TextInput*>(this->m_buttonMenu->getChildByID("splash-text"))->getString();
     auto scale = static_cast<TextInput*>(this->m_buttonMenu->getChildByID("scale"))->getString();
-
     if(scale.empty() || splash.empty() || scale.ends_with(".") || std::stof(scale) <= 0) {
         return FLAlertLayer::create(
             "Error!",
@@ -120,7 +114,6 @@ void EditEntriesLayer::addSplash(CCObject* sender) {
             "OK"
         )->show();
     }
-
     std::vector<std::vector<std::string>> v = this->m_node->getValue();
     std::vector<std::string> v_an;
     v_an.push_back(splash);
@@ -157,30 +150,22 @@ void EditEntriesLayer::editSplash(CCObject* sender) {
 
 void EditEntriesLayer::SplashInputDelegate::textChanged(CCTextInputNode* p0) {
     std::string string = p0->getString();
-    if(string.empty()) {
-        static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(fmt::format("{}", static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_defaultPreviewPlaceholder).c_str());
-    } else {
-        static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(fmt::format("{}", string).c_str());
-    }
+    if(string.empty()) static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(fmt::format("{}", static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_defaultPreviewPlaceholder).c_str());
+    else static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setString(fmt::format("{}", string).c_str());
 }
 
 void EditEntriesLayer::ScaleInputDelegate::textChanged(CCTextInputNode* p0) {
     auto dis_anim = Mod::get()->getSettingValue<bool>("dis-anim");
     float scale;
-    if(p0->getString().empty() || p0->getString() == "0.") {
-        return;
-    } else if(p0->getString() == "1.") {
-        return;
-    } else if(p0->getString() == ".") {
+    if(p0->getString().empty() || p0->getString() == "0.") return;
+    else if(p0->getString() == "1.") return;
+    else if(p0->getString() == ".") {
         p0->setString("");
         return;
-    } else {
-        scale = std::stof(p0->getString());
-    }
+    } else scale = std::stof(p0->getString());
 
-    if(scale > 1.0f) {
-        p0->setString("1.0");
-    } else {
+    if(scale > 1.0f) p0->setString("1.0");
+    else {
         if(scale > 0.f) {
             static_cast<EditEntriesLayer*>(p0->getParent()->getParent()->getParent()->getParent())->m_previewLabel->setScale(scale);
 #ifdef GEODE_IS_MACOS
