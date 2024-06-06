@@ -31,7 +31,6 @@ std::vector<std::vector<std::string>> default_splashes = {
 	{"RubRubRubRubRub", "0.6"},
 	{"There's nothing we can do...", "0.45"},
 	{"Vinovat neiron...", "0.6"},
-	{"We are from Geometry Dash Ukraine...", "0.35"},
 	{"muplan challenge...", "0.6"},
 	{"Ho hey!", "0.6"},
 	{"Again? Really?", "0.6"},
