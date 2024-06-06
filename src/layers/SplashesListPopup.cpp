@@ -1,8 +1,5 @@
 #include "SplashesListPopup.h"
 #include "EditEntriesLayer.h"
-#include "Geode/binding/ScrollingLayer.hpp"
-#include "Geode/cocos/layers_scenes_transitions_nodes/CCLayer.h"
-#include "Geode/ui/ScrollLayer.hpp"
 
 extern std::vector<std::vector<std::string>> default_splashes;
 
@@ -145,10 +142,6 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     splashListBg->setID("list");
     splashListBg->setContentSize(ccp(scale_x, scale_y));
     splashListBg->setPosition({pos_x - scale_x / 2, pos_y - scale_y / 2});
-    
-    // auto list = ListView::create(item_arr, 40.f, scale_x, scale_y);
-    // list->setPosition({pos_x - (scale_x / 2), pos_y - (scale_y / 2)});
-    // list->setID("list");
     auto splashListBorderTop = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-top.png" : "GJ_commentTop_001.png");
     splashListBorderTop->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + 1.f : scale_x + 12.f, Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 17.f : 22.f));
     splashListBorderTop->setPosition({scale_x / 2, scale_y - 7});
@@ -163,7 +156,6 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     splashListBorderRight->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 1.985f : 22.f, scale_y - 30.f));
     splashListBorderRight->setPosition({Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + -0.385f : scale_x + 9.7f, scale_y / 2});
     splashListBorderRight->setRotation(180);
-
     splashListBg->addChild(scrollLayer);
     splashListBg->addChild(splashListBorderTop);
     splashListBg->addChild(splashListBorderDown);
@@ -184,9 +176,7 @@ void SplashesListPopup::deleteAllSplashes(CCObject* sender) {
         "Yes", "No",
         [this](auto, bool btn2) {
             if(!btn2) {
-                std::vector<std::vector<std::string>> v = {
-                    {"Splash", "0.6"}
-                };
+                std::vector<std::vector<std::string>> v = {{"Splash", "0.6"}};
                 this->m_node->setValue(v);
                 this->m_node->dispatchChangedPublic();
                 this->updateSplashesList(offset.x, offset.y, 320, 225);
