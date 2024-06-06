@@ -35,7 +35,7 @@ jobs:
       - name: Build the mod
         uses: Prevter/build-geode-mod@main
         with:
-          bindings: ShineUA/my-bindings
+          # bindings: ShineUA/my-bindings
           combine: true
           export-pdb: true
           build-config: RelWithDebInfo
