@@ -1,5 +1,12 @@
 #include "SplashesListPopup.h"
 #include "EditEntriesLayer.h"
+#include "Geode/binding/CCMenuItemSpriteExtra.hpp"
+#include "Geode/cocos/actions/CCActionInterval.h"
+#include "Geode/cocos/cocoa/CCObject.h"
+#include "Geode/cocos/label_nodes/CCLabelBMFont.h"
+#include "Geode/ui/BasedButtonSprite.hpp"
+#include "Geode/utils/cocos.hpp"
+#include <string>
 
 extern std::vector<std::vector<std::string>> default_splashes;
 
@@ -79,9 +86,85 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
         [this, index](auto, bool btn2) {
             if(!btn2) {
                 std::vector<std::vector<std::string>> v = this->m_node->getValue();
+                size_t   size = v.size();
                 v.erase(v.begin() + index);
                 this->m_node->setValue(v);
-                this->updateSplashesList(offset.x, offset.y, 320, 225);
+                
+                getChildOfType<CCLabelBMFont>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(index).c_str()), 0)->runAction(CCSequence::create(
+                    CCFadeOut::create(0.4),
+                    nullptr
+                ));
+                auto menu = getChildOfType<CCMenu>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(index).c_str()), 0);
+                auto edit_button = static_cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(0));
+                edit_button->m_bEnabled = false;
+                edit_button->runAction(CCFadeOut::create(0.4));
+                static_cast<CCLabelBMFont*>(static_cast<CircleButtonSprite*>(edit_button->getChildren()->objectAtIndex(0))->getChildren()->objectAtIndex(0))->runAction(CCFadeOut::create(0.4));
+                auto delete_button = static_cast<CCMenuItemSpriteExtra*>(menu->getChildren()->objectAtIndex(1));
+                delete_button->m_bEnabled = false;
+                delete_button->runAction(CCFadeOut::create(0.4));
+                static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(index).c_str()))->runAction(CCSequence::create(
+                    CCDelayTime::create(0.4),
+                    CCCallFuncN::create(static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(index).c_str())), callfuncN_selector(SplashesListPopup::destroyNode)),
+                    nullptr
+                ));
+                if (index == 0) {
+                    m_scrollLayer->m_contentLayer->changeHeight((m_scrollLayer->m_contentLayer->getContentHeight() - 40.f < m_scrollLayer->getContentHeight()) ? m_scrollLayer->m_contentLayer->getContentHeight() : m_scrollLayer->m_contentLayer->getContentHeight() - 40);
+                    if(m_scrollLayer->m_contentLayer->getPositionY() < -40 && m_scrollLayer->m_contentLayer->getContentHeight() - 40.f > m_scrollLayer->getContentHeight()) {
+                        m_scrollLayer->m_contentLayer->runAction(CCSequence::create(
+                            CCDelayTime::create(0.4),
+                            CCMoveBy::create(0.3, CCPoint(0, 40)),
+                            nullptr
+                        ));
+                    } else {
+                        for(int i = index + 1; i < size; i++) {
+                            auto node = static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i).c_str()));
+                            node->setZOrder(node->getZOrder() + 1);
+                            node->runAction(CCSequence::create(
+                                CCDelayTime::create(0.4),
+                                CCMoveBy::create(0.3, CCPoint(0, 40)),
+                                nullptr
+                            ));
+                        }
+                    }
+                } else if (index > 0) {
+                    if(m_scrollLayer->m_contentLayer->getContentHeight() - 40.f > m_scrollLayer->getContentHeight()) {
+                        for(int i = index - 1; i >= 0; i--) {
+                            auto node = static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i).c_str()));
+                            node->setZOrder(node->getZOrder() + 1);
+                            node->runAction(CCSequence::create(
+                                CCDelayTime::create(0.4),
+                                CCMoveBy::create(0.3, CCPoint(0, -40)),
+                                nullptr
+                            ));
+                        }
+                        if(m_scrollLayer->m_contentLayer->getPositionY() < -40) {
+                            m_scrollLayer->m_contentLayer->runAction(CCSequence::create(
+                                CCDelayTime::create(0.4),
+                                CCMoveBy::create(0.3, CCPoint(0, 40)),
+                                nullptr
+                            ));
+                        }
+                    } else {
+                        for(int i = index + 1; i < size; i++) {
+                            auto node = static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i).c_str()));
+                            node->setZOrder(node->getZOrder() + 1);
+                            node->runAction(CCSequence::create(
+                                CCDelayTime::create(0.4),
+                                CCMoveBy::create(0.3, CCPoint(0, 40)),
+                                nullptr
+                            ));
+                        }
+                    }
+                    m_scrollLayer->m_contentLayer->changeHeight((m_scrollLayer->m_contentLayer->getContentHeight() - 40.f < m_scrollLayer->getContentHeight()) ? m_scrollLayer->m_contentLayer->getContentHeight() : m_scrollLayer->m_contentLayer->getContentHeight() - 40);
+                }
+                
+                for(size_t i = index + 1; i < size; i++) {
+                    auto node = static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i).c_str()));
+                    static_cast<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(node, 0)->getChildren()->objectAtIndex(0))->setID(std::to_string(std::stoi(static_cast<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(node, 0)->getChildren()->objectAtIndex(0))->getID()) - 1).c_str());
+                    static_cast<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(node, 0)->getChildren()->objectAtIndex(1))->setID(std::to_string(std::stoi(static_cast<CCMenuItemSpriteExtra*>(getChildOfType<CCMenu>(node, 0)->getChildren()->objectAtIndex(1))->getID()) - 1).c_str());
+                    node->setID(std::to_string(std::stoi(node->getID()) - 1).c_str());
+                }
+                //this->updateSplashesList(offset.x, offset.y, 320, 225);
                 this->m_node->dispatchChangedPublic();
                 this->checkForChanges();
             } 
@@ -89,11 +172,17 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
     );
 }
 
+void SplashesListPopup::destroyNode(CCNode* node) {
+    node->removeMeAndCleanup();
+}
+
 void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_x, float scale_y) {
     auto splash_array = this->m_node->getValue();
-    auto scrollLayer = ScrollLayer::create({scale_x, scale_y});
-    scrollLayer->m_contentLayer->changeHeight(40.f * splash_array.size());
-    scrollLayer->scrollToTop();
+    m_scrollLayer = ScrollLayer::create({scale_x, scale_y});
+    m_scrollLayer->setID("scroll-layer");
+    float size = 40.f * splash_array.size();
+    m_scrollLayer->m_contentLayer->changeHeight((size >= scale_y) ? size : std::ceil(scale_y / 40.f) * 40);
+    m_scrollLayer->scrollToTop();
     for(int i = 0;i < splash_array.size();i++) {
         auto itemMenu = CCMenu::create();
         itemMenu->setPosition({scale_x - 40, 40.f / 2.f});
@@ -111,7 +200,7 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
             this,
             menu_selector(SplashesListPopup::deleteEntry)
         );
-        deleteBtn->setID(fmt::format("{}", i).c_str());
+        deleteBtn->setID(std::to_string(i).c_str());
         auto editSprText = CCLabelBMFont::create("Edit", "bigFont.fnt");
         auto editSpr = CircleButtonSprite::create(editSprText, CircleBaseColor::Pink);
         editSpr->setScale(0.7f);
@@ -120,22 +209,24 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
             this,
             menu_selector(SplashesListPopup::editEntry)
         );
-        editBtn->setID(fmt::format("{}", i).c_str());
+        editBtn->setID(std::to_string(i).c_str());
         itemMenu->addChild(editBtn);
         itemMenu->addChild(deleteBtn);
         auto itemNode = CCNode::create();
         itemNode->setContentSize(ccp(scale_x, 40));
+        itemNode->setID(std::to_string(i).c_str());
         if(i % 2 == 0) {
             auto bg = CCLayerColor::create();
             bg->setOpacity(50);
             bg->setContentSize(ccp(scale_x, 40));
-            itemNode->addChild(bg);
+            bg->setPositionY(m_scrollLayer->m_contentLayer->getContentHeight() - (40 * (i + 1)));
+            m_scrollLayer->m_contentLayer->addChild(bg);
         }
         itemNode->addChild(splash);
         itemNode->addChild(itemMenu);
-        itemNode->setPositionY((splash_array.size() - i) * 40.f - 40.f);
+        itemNode->setPositionY(m_scrollLayer->m_contentLayer->getContentHeight() - (40 * (i + 1)));
         itemMenu->updateLayout();
-        scrollLayer->m_contentLayer->addChild(itemNode);
+        m_scrollLayer->m_contentLayer->addChild(itemNode);
     }
     auto splashListBg = CCLayerColor::create();
     splashListBg->setOpacity(75);
@@ -156,7 +247,7 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     splashListBorderRight->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 1.985f : 22.f, scale_y - 30.f));
     splashListBorderRight->setPosition({Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + -0.385f : scale_x + 9.7f, scale_y / 2});
     splashListBorderRight->setRotation(180);
-    splashListBg->addChild(scrollLayer);
+    splashListBg->addChild(m_scrollLayer);
     splashListBg->addChild(splashListBorderTop);
     splashListBg->addChild(splashListBorderDown);
     splashListBg->addChild(splashListBorderLeft);

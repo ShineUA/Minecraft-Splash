@@ -1,6 +1,9 @@
 #include "EditEntriesLayer.h"
 
 #include "../tools/Easings.h"
+#include "Geode/cocos/actions/CCActionInterval.h"
+#include "Geode/cocos/label_nodes/CCLabelBMFont.h"
+#include "SplashesListPopup.h"
 #include <Geode/ui/TextInput.hpp>
 
 EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int mode, SplashesListPopup* prev_popup) {
@@ -120,6 +123,7 @@ void EditEntriesLayer::addSplash(CCObject* sender) {
     v_an.push_back(scale);
     v.push_back(v_an);
     this->m_node->setValue(v);
+    #pragma message("TODO")
     this->m_previousPopup->updateSplashesList(this->m_previousPopup->offset.x, this->m_previousPopup->offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
     this->m_previousPopup->checkForChanges();
@@ -142,7 +146,24 @@ void EditEntriesLayer::editSplash(CCObject* sender) {
     v_an.push_back(scale);
     v.at(this->m_index) = v_an;
     this->m_node->setValue(v);
-    this->m_previousPopup->updateSplashesList(this->m_previousPopup->offset.x, this->m_previousPopup->offset.y, 320, 225);
+    auto oldVisSplash = getChildOfType<CCLabelBMFont>(this->m_previousPopup->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(this->m_index)), 0);
+    auto newVisSplash = CCLabelBMFont::create(splash.c_str(), "bigFont.fnt");
+    newVisSplash->setScale(0.5f);
+    newVisSplash->setAnchorPoint({0.f, 0.5f});
+    newVisSplash->setPosition({5.f, 20.f});
+    newVisSplash->limitLabelWidth(this->m_previousPopup->m_scrollLayer->getContentWidth() - 86.f, 0.5f, 0.2f);
+    newVisSplash->setOpacity(0);
+    this->m_previousPopup->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(this->m_index))->addChild(newVisSplash);
+    oldVisSplash->runAction(CCSequence::create(
+        CCFadeOut::create(0.3),
+        CCCallFuncN::create(oldVisSplash, callfuncN_selector(SplashesListPopup::destroyNode)),
+        nullptr
+    ));
+    newVisSplash->runAction(CCSequence::create(
+        CCDelayTime::create(0.4),
+        CCFadeIn::create(0.3),
+        nullptr
+    ));
     this->m_node->dispatchChangedPublic();
     this->m_previousPopup->checkForChanges();
     this->onClose(nullptr);
