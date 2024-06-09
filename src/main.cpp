@@ -1,4 +1,5 @@
 #include "main.h"
+#include "settings/CustomSettings.h"
 
 $on_mod(Loaded) {
     Mod::get()->addCustomSetting<ArrayListValue>("splashes", default_splashes);

@@ -13,6 +13,8 @@ class SplashesListPopup : public geode::Popup<ArrayListNode*> {
         void deleteAllSplashes(cocos2d::CCObject* sender);
         void resetSplashes(cocos2d::CCObject* sender);
     public:
+        bool m_isEven;
+        size_t m_startSize;
         ScrollLayer* m_scrollLayer;
         const cocos2d::CCPoint offset = {435.f / 2, 300.f / 2};
         void addEntry(cocos2d::CCObject* sender);

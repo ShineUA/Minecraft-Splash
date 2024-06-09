@@ -118,7 +118,6 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
                     } else {
                         for(int i = index + 1; i < size; i++) {
                             auto node = static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i).c_str()));
-                            node->setZOrder(node->getZOrder() + 1);
                             node->runAction(CCSequence::create(
                                 CCDelayTime::create(0.4),
                                 CCMoveBy::create(0.3, CCPoint(0, 40)),
@@ -130,7 +129,6 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
                     if(m_scrollLayer->m_contentLayer->getContentHeight() - 40.f > m_scrollLayer->getContentHeight()) {
                         for(int i = index - 1; i >= 0; i--) {
                             auto node = static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i).c_str()));
-                            node->setZOrder(node->getZOrder() + 1);
                             node->runAction(CCSequence::create(
                                 CCDelayTime::create(0.4),
                                 CCMoveBy::create(0.3, CCPoint(0, -40)),
@@ -147,7 +145,6 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
                     } else {
                         for(int i = index + 1; i < size; i++) {
                             auto node = static_cast<CCNode*>(this->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i).c_str()));
-                            node->setZOrder(node->getZOrder() + 1);
                             node->runAction(CCSequence::create(
                                 CCDelayTime::create(0.4),
                                 CCMoveBy::create(0.3, CCPoint(0, 40)),
@@ -178,7 +175,9 @@ void SplashesListPopup::destroyNode(CCNode* node) {
 
 void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_x, float scale_y) {
     auto splash_array = this->m_node->getValue();
+    this->m_startSize = splash_array.size();
     m_scrollLayer = ScrollLayer::create({scale_x, scale_y});
+    this->m_isEven = ((splash_array.size() - 1) * 40.f > this->m_scrollLayer->getContentHeight()) ? splash_array.size() % 2 == 0 : true;
     m_scrollLayer->setID("scroll-layer");
     float size = 40.f * splash_array.size();
     m_scrollLayer->m_contentLayer->changeHeight((size >= scale_y) ? size : std::ceil(scale_y / 40.f) * 40);
@@ -218,12 +217,14 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
         if(i % 2 == 0) {
             auto bg = CCLayerColor::create();
             bg->setOpacity(50);
+            bg->setID("col-" + std::to_string(i));
             bg->setContentSize(ccp(scale_x, 40));
             bg->setPositionY(m_scrollLayer->m_contentLayer->getContentHeight() - (40 * (i + 1)));
             m_scrollLayer->m_contentLayer->addChild(bg);
         }
         itemNode->addChild(splash);
         itemNode->addChild(itemMenu);
+        itemNode->setZOrder(1);
         itemNode->setPositionY(m_scrollLayer->m_contentLayer->getContentHeight() - (40 * (i + 1)));
         itemMenu->updateLayout();
         m_scrollLayer->m_contentLayer->addChild(itemNode);
