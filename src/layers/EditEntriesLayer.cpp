@@ -124,60 +124,69 @@ void EditEntriesLayer::addSplash(CCObject* sender) {
     v_an.push_back(scale);
     v.push_back(v_an);
     this->m_node->setValue(v);
-    this->m_previousPopup->m_scrollLayer->m_contentLayer->setContentHeight(this->m_previousPopup->m_scrollLayer->m_contentLayer->getContentHeight() + 40);
-
     auto itemMenu = CCMenu::create();
-    itemMenu->setPosition({this->m_previousPopup->m_scrollLayer->getContentWidth() - 40, 40.f / 2.f});
-    itemMenu->setContentWidth(73);
-    itemMenu->setLayout(RowLayout::create()->setAutoScale(false), false);
-    auto splashText = CCLabelBMFont::create(splash.c_str(), "bigFont.fnt");
-    splashText->setScale(0.5f);
-    splashText->setAnchorPoint({0.f, 0.5f});
-    splashText->setPosition({5.f, 20.f});
-    splashText->limitLabelWidth(this->m_previousPopup->m_scrollLayer->getContentWidth() - 86.f, 0.5f, 0.2f);
-    auto deleteSpr = CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
-    deleteSpr->setScale(0.8f);
-    auto deleteBtn = CCMenuItemSpriteExtra::create(
-        deleteSpr,
-        this->m_previousPopup,
-        menu_selector(SplashesListPopup::deleteEntry)
-    );
-    deleteBtn->setID(std::to_string(v.size()- 1).c_str());
-    auto editSprText = CCLabelBMFont::create("Edit", "bigFont.fnt");
-    auto editSpr = CircleButtonSprite::create(editSprText, CircleBaseColor::Pink);
-    editSpr->setScale(0.7f);
-    auto editBtn = CCMenuItemSpriteExtra::create(
-        editSpr,
-        this->m_previousPopup,
-        menu_selector(SplashesListPopup::editEntry)
-    );
-    editBtn->setID(std::to_string(v.size() - 1).c_str());
-    itemMenu->addChild(editBtn);
-    itemMenu->addChild(deleteBtn);
-    auto itemNode = CCNode::create();
-    itemNode->setContentSize(ccp(this->m_previousPopup->m_scrollLayer->getContentWidth(), 40));
-    itemNode->setID(std::to_string(v.size() - 1).c_str());
-    if((v.size() - 1) % 2 == 0) {
-        auto bg = CCLayerColor::create();
-        bg->setOpacity(50);
-        bg->setContentSize(ccp(this->m_previousPopup->m_scrollLayer->getContentWidth(), 40));
-        bg->setPositionY(-40);
-        this->m_previousPopup->m_scrollLayer->m_contentLayer->addChild(bg);
+        itemMenu->setPosition({this->m_previousPopup->m_scrollLayer->getContentWidth() - 40, 40.f / 2.f});
+        itemMenu->setContentWidth(73);
+        itemMenu->setLayout(RowLayout::create()->setAutoScale(false), false);
+        auto splashText = CCLabelBMFont::create(splash.c_str(), "bigFont.fnt");
+        splashText->setScale(0.5f);
+        splashText->setAnchorPoint({0.f, 0.5f});
+        splashText->setPosition({5.f, 20.f});
+        splashText->limitLabelWidth(this->m_previousPopup->m_scrollLayer->getContentWidth() - 86.f, 0.5f, 0.2f);
+        auto deleteSpr = CCSprite::createWithSpriteFrameName("GJ_trashBtn_001.png");
+        deleteSpr->setScale(0.8f);
+        auto deleteBtn = CCMenuItemSpriteExtra::create(
+            deleteSpr,
+            this->m_previousPopup,
+            menu_selector(SplashesListPopup::deleteEntry)
+        );
+        deleteBtn->setID(std::to_string(v.size()- 1).c_str());
+        auto editSprText = CCLabelBMFont::create("Edit", "bigFont.fnt");
+        auto editSpr = CircleButtonSprite::create(editSprText, CircleBaseColor::Pink);
+        editSpr->setScale(0.7f);
+        auto editBtn = CCMenuItemSpriteExtra::create(
+            editSpr,
+            this->m_previousPopup,
+            menu_selector(SplashesListPopup::editEntry)
+        );
+        editBtn->setID(std::to_string(v.size() - 1).c_str());
+        itemMenu->addChild(editBtn);
+        itemMenu->addChild(deleteBtn);
+        auto itemNode = CCNode::create();
+        itemNode->setContentSize(ccp(this->m_previousPopup->m_scrollLayer->getContentWidth(), 40));
+        itemNode->setID(std::to_string(v.size() - 1).c_str());
+        if((v.size() - 1) % 2 == 0) {
+            auto bg = CCLayerColor::create();
+            bg->setOpacity(50);
+            bg->setContentSize(ccp(this->m_previousPopup->m_scrollLayer->getContentWidth(), 40));
+            bg->setPositionY(-40);
+            this->m_previousPopup->m_scrollLayer->m_contentLayer->addChild(bg);
+        }
+        itemNode->addChild(splashText);
+        itemNode->addChild(itemMenu);
+        itemMenu->updateLayout();
+    if((v.size() - 1) * 40.f > this->m_previousPopup->m_scrollLayer->getContentHeight()) {
+        this->m_previousPopup->m_scrollLayer->m_contentLayer->setContentHeight(this->m_previousPopup->m_scrollLayer->m_contentLayer->getContentHeight() + 40);
+        itemNode->setPositionY(-40);
+        itemNode->runAction(CCMoveBy::create(0.4, {0, 40}));
+
+        for(int i = v.size() - 2; i >= 0; i--) {
+            auto node = this->m_previousPopup->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i));
+            node->runAction(CCMoveBy::create(0.4, {0, 40}));
+        }
+        this->m_previousPopup->m_scrollLayer->m_contentLayer->addChild(itemNode);
+    } else {
+        itemNode->setPositionY(this->m_previousPopup->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(v.size() - 2))->getPositionY() - 40);
+        splashText->setOpacity(0);
+        editSprText->setOpacity(0);
+        editSpr->setOpacity(0);
+        deleteSpr->setOpacity(0);
+        splashText->runAction(CCFadeIn::create(0.4));
+        editSprText->runAction(CCFadeIn::create(0.4));
+        editSpr->runAction(CCFadeIn::create(0.4));
+        deleteSpr->runAction(CCFadeIn::create(0.4));
+        this->m_previousPopup->m_scrollLayer->m_contentLayer->addChild(itemNode);
     }
-    itemNode->addChild(splashText);
-    itemNode->addChild(itemMenu);
-    itemNode->setPositionY(-40);
-    itemMenu->updateLayout();
-    itemNode->runAction(CCMoveBy::create(0.4, {0, 40}));
-
-    for(int i = v.size() - 2; i >= 0; i--) {
-        auto node = this->m_previousPopup->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(i));
-        log::info("{}, {}", node == nullptr, i);
-        node->runAction(CCMoveBy::create(0.4, {0, 40}));
-    }
-
-    this->m_previousPopup->m_scrollLayer->m_contentLayer->addChild(itemNode);
-
     //this->m_previousPopup->updateSplashesList(this->m_previousPopup->offset.x, this->m_previousPopup->offset.y, 320, 225);
     this->m_node->dispatchChangedPublic();
     this->m_previousPopup->checkForChanges();
