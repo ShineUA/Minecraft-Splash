@@ -1,7 +1,7 @@
 #pragma once
 #include <Geode/loader/SettingNode.hpp>
-#include <vector>
 #include <matjson/stl_serialize.hpp>
+#include <vector>
 #include <random>
 #include <Geode/Bindings.hpp>
 #include <string>
@@ -14,12 +14,7 @@ class ArrayListValue : public SettingValue {
     public:
         ArrayListValue(std::string const& key, std::string const& modID, std::vector<std::vector<std::string>> const& splashArray) : SettingValue(key, modID), m_splashArray(splashArray) {}
         bool load(matjson::Value const& json) override {
-            try {
-                m_splashArray = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector");
-                return true;
-            } catch(...) {
-                return false;
-            }
+            m_splashArray = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector");
             return true;
         }
         bool save(matjson::Value& json) const override {
@@ -36,7 +31,6 @@ class ArrayListValue : public SettingValue {
         std::vector<std::vector<std::string>> getArray() {
             return m_splashArray;
         }
-
 };
 
 class ArrayListNode : public SettingNode {

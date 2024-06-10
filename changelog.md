@@ -1,8 +1,9 @@
-# v1.3.2
+# v1.4.0
 
 - Deleted some splashes.
 - Migrated from `init()` to `initAnchored()`.
 - Migrated from `ListView` class to `ScrollLayer`.
+- Animated list of splashes.
 - Added new Geode Theme support.
 - Added a way to support me.
 - Updated mod's description.

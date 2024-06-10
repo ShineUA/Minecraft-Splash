@@ -31,7 +31,7 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
 
 void ArrayListNode::commit() {
     static_cast<ArrayListValue*>(m_value)->setArray(this->getValue());
-    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector",  static_cast<ArrayListValue*>(m_value)->getArray());
+    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", static_cast<ArrayListValue*>(m_value)->getArray());
     if(static_cast<ArrayListValue*>(m_value)->getArray().size() == 1) {
         splashIndex = 0;
     } else {
