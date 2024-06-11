@@ -20,7 +20,7 @@ class $modify(MenuLayer) {
 			if(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size() == (size_t)1) {
 				splashIndex = 0;
 			} else {
-				std::random_device rd; 
+				std::random_device rd;
 				std::mt19937 gen(rd()); 
 				std::uniform_int_distribution<std::mt19937::result_type> distr(0, Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size() - 1); 
 				splashIndex = distr(gen);
