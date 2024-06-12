@@ -7,6 +7,7 @@
 - Added new Geode Theme support.
 - Added a way to support me.
 - Updated mod's description.
+- Removed Mac Support until functions addresses gonna be found.
 
 # v1.3.1
 
