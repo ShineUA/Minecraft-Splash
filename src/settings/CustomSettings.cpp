@@ -1,16 +1,9 @@
 #include "CustomSettings.h"
 
-#include <Geode/Bindings.hpp>
-#include <string>
-#include <cstring>
-
-#pragma once
-
 #include "../layers/SplashesListPopup.h"
-#include "../layers/EditEntriesLayer.h"
-#include "../main.h"
 
-using namespace geode::prelude;
+extern int splashIndex;
+extern std::vector<std::vector<std::string>> default_splashes;
 
 SettingNode* ArrayListValue::createNode(float width) {
     return ArrayListNode::create(this, width);
@@ -20,55 +13,40 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
     if (!SettingNode::init(value))
         return false;
     geode::cocos::handleTouchPriority(this);
-
     this->setValue(value->getArray());
-    
-    // You may change the height to anything, but make sure to call 
-    // setContentSize!
     this->setContentSize({ width, 40.f });
-
     auto ccmenu = CCMenu::create();
-
-    auto spr = ButtonSprite::create("Edit Splashes");
-
+    ButtonSprite* spr;
+    spr = ButtonSprite::create("Edit Splashes", "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png");
     auto btn = CCMenuItemSpriteExtra::create(
         spr, this, menu_selector(ArrayListNode::createPopup)
     );
-
     ccmenu->setPosition({width / 2, 20.f});
     btn->setScale(0.7f);
     btn->m_baseScale = 0.7f;
-
     ccmenu->addChild(btn);
     this->addChild(ccmenu);
     return true;
 }
 
 void ArrayListNode::commit() {
-    // Set the actual value
-    // Let the UI know you have committed the value
-    // My value is set in EntriesLayer
     static_cast<ArrayListValue*>(m_value)->setArray(this->getValue());
-    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector",  static_cast<ArrayListValue*>(m_value)->getArray());
+    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", static_cast<ArrayListValue*>(m_value)->getArray());
     if(static_cast<ArrayListValue*>(m_value)->getArray().size() == 1) {
-        random_splash = 0;
+        splashIndex = 0;
     } else {
         std::random_device rd; 
         std::mt19937 gen(rd()); 
         std::uniform_int_distribution<std::mt19937::result_type> distr(0, static_cast<ArrayListValue*>(m_value)->getArray().size() - 1); 
-        random_splash = distr(gen);
+        splashIndex = distr(gen);
     }
     this->dispatchCommitted();
 }
 
-// Geode calls this to query if the setting value has been changed, 
-// and those changes haven't been committed
 bool ArrayListNode::hasUncommittedChanges() {
     return m_unsavedArray != static_cast<ArrayListValue*>(m_value)->getArray();
 }
 
-// Geode calls this to query if the setting has a value that is 
-// different from its default value
 bool ArrayListNode::hasNonDefaultValue() {
     return m_unsavedArray != default_splashes;
 }
@@ -82,7 +60,6 @@ void ArrayListNode::setValue(std::vector<std::vector<std::string>> value) {
     this->m_unsavedArray.assign(value.begin(), value.end());
 }
 
-// Geode calls this to reset the setting's value back to default
 void ArrayListNode::resetToDefault() {
     this->setValue(default_splashes);
     this->dispatchChangedPublic();

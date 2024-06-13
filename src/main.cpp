@@ -1,75 +1,9 @@
 #include "main.h"
-
-#include <Geode/Geode.hpp>
-#include <Geode/modify/MenuLayer.hpp>
-#include <Geode/modify/PauseLayer.hpp>
-#include <random>
-#include <string>
-#include <cstring>
-#include <matjson/stl_serialize.hpp>
-#include <fmt/format.h>
 #include "settings/CustomSettings.h"
-#include "settings/SectionSetting.hpp"
-#include "tools/Easings.h"
-
-
-std::vector<std::vector<std::string>> default_splashes = {
-	{"Also try minecraft...", "0.6"},
-	{"Also try terraria...", "0.6"},
-	{"Go touch some grass...", "0.6"},
-	{"FIRE IN THE HOLE!!!!", "0.6"},
-	{"I'm verified THE GOLDEN LETS GO!", "0.35"},
-	{"Also try the impossible game...", "0.45"},
-	{"WATER ON THE HILL!!!", "0.6"},
-	{"Korivka top!","0.6"},
-	{"Chomu ne na fronti?", "0.6"},
-	{"jump on the spike to win...", "0.5"},
-	{"try Tidal wave if you're new...", "0.45"},
-	{"try Bloodbath if you're new...", "0.45"},
-	{"don't crash on 99%...", "0.6"},
-	{"lobotomy dash...", "0.6"},
-	{"also try star echo...", "0.6"},
-	{"RubRubRubRubRub", "0.6"},
-	{"There's nothing we can do...", "0.45"},
-	{"Vinovat neiron...", "0.6"},
-	{"We are from Geometry Dash Ukraine...", "0.35"},
-	{"muplan challenge...", "0.6"},
-	{"Ho hey!", "0.6"},
-	{"Again? Really?", "0.6"},
-	{"Continue?", "0.6"},
-	{"GGWP", "0.6"},
-	{"LOL", "0.6"},
-	{"Take a break...", "0.6"},
-	{"Not ok...", "0.6"},
-	{"You ok?", "0.6"},
-	{"BASED", "0.6"},
-	{"el pepe", "0.6"},
-	{"Harder than FNF", "0.6"},
-	{"I am Batman", "0.6"},
-	{"huhu yo", "0.6"},
-	{"Kappa", "0.6"},
-	{"pogchamp", "0.6"},
-	{"Press alt + f4 for secret way", "0.45"},
-	{"Take a break!", "0.6"},
-	{"Time to go outside...", "0.6"},
-	{"To be continued...", "0.6"},
-	{"youre going to brazil", "0.6"},
-	{"Click between frames!", "0.7"},
-	{"Clicking between frames is only cheating if its against the rules", "0.15"},
-	{"Hello, I'm Robtop...", "0.6"},
-	{"Robtop likes clicking between frames...", "0.35"},
-	{"Consider being soggy...", "0.6"}
-};
-
-int random_splash;
-
-bool onOpenRandom = false;
-
-using namespace geode::prelude;
 
 $on_mod(Loaded) {
     Mod::get()->addCustomSetting<ArrayListValue>("splashes", default_splashes);
-	Mod::get()->addCustomSetting<SectionSettingValue>("label-label", "none");
+	Mod::get()->addCustomSetting<SectionSettingValue>("main-label", "none");
 	Mod::get()->addCustomSetting<SectionSettingValue>("splashes-label", "none");
 }
 
@@ -82,66 +16,43 @@ $execute {
 class $modify(MenuLayer) {
 	bool init() {
 		if (!MenuLayer::init()) return false;
-
-		auto main_title = this->getChildByID("main-title");
-
 		if(!onOpenRandom) {
-			auto am_of_spl = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size();
-			if(am_of_spl == 1) {
-				random_splash = 0;
+			if(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size() == (size_t)1) {
+				splashIndex = 0;
 			} else {
-				std::random_device rd; 
+				std::random_device rd;
 				std::mt19937 gen(rd()); 
-				std::uniform_int_distribution<std::mt19937::result_type> distr(0, am_of_spl - 1); 
-				random_splash = distr(gen);
+				std::uniform_int_distribution<std::mt19937::result_type> distr(0, Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size() - 1); 
+				splashIndex = distr(gen);
 			}
 			onOpenRandom = true;
 		}
-
-		auto appearence_setting = Mod::get()->getSettingValue<bool>("new-appearance");
-
-		auto splash = CCLabelBMFont::create("", "goldFont.fnt");
-		auto winSize = CCDirector::get()->getWinSize();
-		auto density = winSize.width / winSize.height;
-		float posX;
-		float posY;
-
-		if(appearence_setting){
-			posX = main_title->getPositionX() + 167.f;
-			posY = main_title->getPositionY() - 11.f;
+		auto splash = CCLabelBMFont::create(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[splashIndex][0].c_str(), "goldFont.fnt");
+		splash->setScale(std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[splashIndex][1]));
+		if(Mod::get()->getSettingValue<bool>("new-appearance")){
+			splash->setPosition({this->getChildByID("main-title")->getPositionX() + 167.f, this->getChildByID("main-title")->getPositionY() - 11.f});
 			splash->setRotation(-15.f);
 		} else {
-			if(density < 1.7f && density >= 1.5f) {
-				posX = winSize.width / 2 + 154.f;
-				posY = winSize.height / 2 + 73.f;
-			} else if(density < 1.5f) {
-				posX = winSize.width / 2 + 132.f;
-				posY = winSize.height / 2 + 86.f;
+			if(CCDirector::get()->getWinSize().width / CCDirector::get()->getWinSize().height < 1.7f && CCDirector::get()->getWinSize().width / CCDirector::get()->getWinSize().height >= 1.5f) {
+				splash->setPosition({CCDirector::get()->getWinSize().width / 2 + 154.f, CCDirector::get()->getWinSize().height / 2 + 73.f});
+			} else if(CCDirector::get()->getWinSize().width / CCDirector::get()->getWinSize().height < 1.5f) {
+				splash->setPosition({CCDirector::get()->getWinSize().width / 2 + 132.f, CCDirector::get()->getWinSize().height / 2 + 86.f});
 			} else {
-				posX = winSize.width / 2 + 183.f;
-				posY = winSize.height / 2 + 71.f;
+				splash->setPosition({CCDirector::get()->getWinSize().width / 2 + 183.f, CCDirector::get()->getWinSize().height / 2 + 71.f});
 			}
 			splash->setRotation(-9.f);
 		}
-		
-		auto label_text = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][0];
-		splash->setString(fmt::format("{}", label_text).c_str());
-
-		auto size = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector")[random_splash][1];
-		splash->setScale(std::stof((size)));
-
 #ifdef GEODE_IS_MACOS
 		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
 			splash->runAction(CCRepeatForever::create(CCSequence::create(
-				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1)) + Mod::get()->getSettingValue<double>("animation-scale")),
-				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(random_splash).at(1))),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(splashIndex).at(1)) + Mod::get()->getSettingValue<double>("animation-scale")),
+				cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(splashIndex).at(1))),
 				nullptr
 			)));
 		}
 #else
 		CCActionInterval* inEasing = Easings::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"));
 		CCActionInterval* outEasing = Easings::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"));
-
 		if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
 			splash->runAction(CCRepeatForever::create(CCSequence::create(
 				inEasing,
@@ -150,27 +61,22 @@ class $modify(MenuLayer) {
 			)));
 		}
 #endif
-		
 		splash->setZOrder(15);
 		splash->setID("minecraft-splash");
-		splash->setPosition(posX, posY);
 		addChild(splash);
 		return true;
 	}
 };
-
 class $modify(PauseLayer) {
 	void onQuit(CCObject* sender) {
-		auto am_of_spl = Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size();
-		if(am_of_spl == 1) {
-			random_splash = 0;
+		if(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size() == (size_t)1) {
+			splashIndex = 0;
 		} else {
-			std::random_device rd; 
-			std::mt19937 gen(rd()); 
-			std::uniform_int_distribution<std::mt19937::result_type> distr(0, am_of_spl - 1); 
-			random_splash = distr(gen);
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_int_distribution<std::mt19937::result_type> distr(0, Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").size() - 1); 
+			splashIndex = distr(gen);
 		}
-		
 		PauseLayer::onQuit(sender);
 	}
 };

@@ -1,23 +1,23 @@
+
 {
-	"geode": "2.0.0-beta.23",
+	"geode": "3.0.0-alpha.2",
 	"gd": {
-		"win": "2.204",
-		"android": "2.205",
-		"mac": "2.200"
+		"win": "2.206",
+		"android": "2.206",
+		"mac": "2.206"
 	},
-	"version": "v1.3.1",
+	"version": "v1.4.0",
 	"id": "shineua.minecraft_splash",
 	"name": "Minecraft Splash",
 	"developer": "ShineUA",
 	"description": "Adds the splash text from Minecraft",
 	"repository": "https://github.com/ShineUA/minecraft-splash-mod-geode",
+	"tags": ["Interface", "Enhancement", "Offline"],
 	"resources": {
-		"sprites": [
-			"resources/sprites/*.png"
-		]
+		"files": ["screenshots/*.png"]
 	},
 	"settings": {
-		"label-label": {
+		"main-label": {
 			"name": "Label Settings",
 			"description": "Customization settings for label.",
 			"type": "custom"

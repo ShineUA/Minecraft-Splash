@@ -1,8 +1,17 @@
+# v1.4.0
+
+- Deleted some splashes.
+- Migrated from `init()` to `initAnchored()`.
+- Migrated from `ListView` class to `ScrollLayer`.
+- Animated list of splashes.
+- Added new Geode Theme support.
+- Added a way to support me.
+- Updated mod's description.
+- Removed Mac Support until functions addresses gonna be found.
+
 # v1.3.1
 
 - Added 5 splashes.
-
-### This is the penultimate update.
 
 # v1.3.0
 
@@ -11,7 +20,7 @@
 # v1.2.8
 
 - Fixed crash.
-- Added "Reset" button in `SplashesListPopup`.
+- Added `Reset` button in `SplashesListPopup`.
 
 # v1.2.7
 

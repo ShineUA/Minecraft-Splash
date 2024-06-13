@@ -1,8 +1,6 @@
-#include <Geode/Bindings.hpp>
-#include <string>
-
 #pragma once
 
+#include <string>
 #include "../settings/CustomSettings.h"
 #include "SplashesListPopup.h"
 
@@ -10,7 +8,7 @@ using namespace geode::prelude;
 
 class EditEntriesLayer : public geode::Popup<ArrayListNode*, int, int, SplashesListPopup*> {
     protected:
-    const CCPoint offset = cocos2d::CCDirector::get()->getWinSize() / 2.f;
+        const CCPoint offset = {435.f / 2, 285.f / 2};
         ArrayListNode* m_node;
         SplashesListPopup* m_previousPopup;
         int m_index;

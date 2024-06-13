@@ -1,7 +1,9 @@
-#include <Geode/Bindings.hpp>
+#pragma once
 #include <matjson/stl_serialize.hpp>
 
 using namespace geode::prelude;
+
+extern int splashIndex;
 
 #if !defined GEODE_IS_MACOS
 class Easings {
