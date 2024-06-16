@@ -1,3 +1,7 @@
+# v1.4.1
+
+- Updated to `Geode 3.0.0-beta.1`.
+
 # v1.4.0
 
 - Deleted some splashes.
