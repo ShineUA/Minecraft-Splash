@@ -1,11 +1,7 @@
 #include "EditEntriesLayer.h"
 
 #include "../tools/Easings.h"
-#include "Geode/cocos/actions/CCActionInterval.h"
-#include "Geode/cocos/label_nodes/CCLabelBMFont.h"
 #include "SplashesListPopup.h"
-#include <Geode/ui/TextInput.hpp>
-#include <string>
 
 EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int mode, SplashesListPopup* prev_popup) {
     EditEntriesLayer* ret = new EditEntriesLayer();
@@ -66,8 +62,6 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
         addBtn->setPosition({offset.x, offset.y + -120});
         this->m_buttonMenu->addChild(addBtn);
     } else if(mode == 1) {
-        // auto edit_label = CCLabelBMFont::create("Edit Splash", "goldFont.fnt");
-        // edit_label->setPosition({offset.x, offset.y + 65 + 60});
         this->setTitle("Edit Splash", "goldFont.fnt", 1);
         labelInput->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
         scaleInput->setString(this->m_node->getValue().at(this->m_index).at(1).c_str());
@@ -86,15 +80,6 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
     labelInput->getInputNode()->setDelegate(splashDelegate);
     auto scaleDelegate = new EditEntriesLayer::ScaleInputDelegate();
     scaleInput->getInputNode()->setDelegate(scaleDelegate);
-#ifdef GEODE_IS_MACOS
-    if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
-        this->m_previewLabel->runAction(CCRepeatForever::create(CCSequence::create(
-            cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(splashIndex).at(1)) + Mod::get()->getSettingValue<double>("animation-scale")),
-            cocos2d::CCScaleTo::create(Mod::get()->getSettingValue<double>("animation-length"), std::stof(Mod::get()->getSavedValue<std::vector<std::vector<std::string>>>("splashes-vector").at(splashIndex).at(1))),
-            nullptr
-        )))->setTag(1);
-    }
-#else
     CCActionInterval* inEasing = EasingsPreview::returnEasingIn(Mod::get()->getSettingValue<int64_t>("easing-in"), this->m_previewLabel);
     CCActionInterval* outEasing = EasingsPreview::returnEasingOut(Mod::get()->getSettingValue<int64_t>("easing-out"), this->m_previewLabel);
     if(!Mod::get()->getSettingValue<bool>("dis-anim")) {
@@ -104,7 +89,6 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
             nullptr
         )))->setTag(1);
     }
-#endif
     return true;
 }
 

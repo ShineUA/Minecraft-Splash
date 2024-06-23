@@ -5,6 +5,7 @@
 #include "Geode/cocos/cocoa/CCObject.h"
 #include "Geode/cocos/label_nodes/CCLabelBMFont.h"
 #include "Geode/ui/BasedButtonSprite.hpp"
+#include "Geode/ui/General.hpp"
 #include "Geode/utils/cocos.hpp"
 #include <string>
 
@@ -28,7 +29,7 @@ bool SplashesListPopup::setup(ArrayListNode* node) {
     if(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme")) this->m_closeBtn->setSprite(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.85f, CircleBaseColor::DarkPurple));
     else this->m_closeBtn->setSprite(CircleButtonSprite::createWithSpriteFrameName("geode.loader/close.png", 0.85f, CircleBaseColor::Green));
     auto item_arr = CCArray::create();
-    this->setupSplashesList(offset.x, offset.y, 320, 225);
+    this->setupSplashesList(offset.x, offset.y, 348, 225);
     auto addBtn_spr = ButtonSprite::create("Add Splash", 0, false, "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png", 30.f, 0.7f);
     addBtn_spr->setScale(0.7);
     auto addBtn = CCMenuItemSpriteExtra::create(
@@ -234,25 +235,31 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     splashListBg->setID("list");
     splashListBg->setContentSize(ccp(scale_x, scale_y));
     splashListBg->setPosition({pos_x - scale_x / 2, pos_y - scale_y / 2});
-    auto splashListBorderTop = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-top.png" : "GJ_commentTop_001.png");
-    splashListBorderTop->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + 1.f : scale_x + 12.f, Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 17.f : 22.f));
-    splashListBorderTop->setPosition({scale_x / 2, scale_y - 7});
-    auto splashListBorderDown = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-top.png" : "GJ_commentTop_001.png");
-    splashListBorderDown->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + 1.f : scale_x + 12.f, Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 18.f : 22.f));
-    splashListBorderDown->setPosition({scale_x / 2, 7});
-    splashListBorderDown->setRotation(180);
-    auto splashListBorderLeft = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-side.png" : "GJ_commentSide_001.png");
-    splashListBorderLeft->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 1.985f : 22.f, scale_y - 30.f));
-    splashListBorderLeft->setPosition({Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 0.385f : -9.7f, scale_y / 2});
-    auto splashListBorderRight = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-side.png" : "GJ_commentSide_001.png");
-    splashListBorderRight->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 1.985f : 22.f, scale_y - 30.f));
-    splashListBorderRight->setPosition({Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + -0.385f : scale_x + 9.7f, scale_y / 2});
-    splashListBorderRight->setRotation(180);
+    auto splashListBorders = ListBorders::create();
+    splashListBorders->setSpriteFrames(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-top.png" : "GJ_commentTop_001.png", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-side.png" : "GJ_commentSide_001.png");
+    splashListBorders->setContentSize(ccp(scale_x, scale_y));
+    splashListBorders->setPosition({scale_x / 2, scale_y / 2});
+
+    // auto splashListBorderTop = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-top.png" : "GJ_commentTop_001.png");
+    // splashListBorderTop->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + 1.f : scale_x + 12.f, Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 17.f : 22.f));
+    // splashListBorderTop->setPosition({scale_x / 2, scale_y - 7});
+    // auto splashListBorderDown = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-top.png" : "GJ_commentTop_001.png");
+    // splashListBorderDown->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + 1.f : scale_x + 12.f, Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 18.f : 22.f));
+    // splashListBorderDown->setPosition({scale_x / 2, 7});
+    // splashListBorderDown->setRotation(180);
+    // auto splashListBorderLeft = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-side.png" : "GJ_commentSide_001.png");
+    // splashListBorderLeft->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 1.985f : 22.f, scale_y - 30.f));
+    // splashListBorderLeft->setPosition({Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 0.385f : -9.7f, scale_y / 2});
+    // auto splashListBorderRight = CCScale9Sprite::createWithSpriteFrameName(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/geode-list-side.png" : "GJ_commentSide_001.png");
+    // splashListBorderRight->setContentSize(ccp(Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? 1.985f : 22.f, scale_y - 30.f));
+    // splashListBorderRight->setPosition({Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? scale_x + -0.385f : scale_x + 9.7f, scale_y / 2});
+    // splashListBorderRight->setRotation(180);
     splashListBg->addChild(m_scrollLayer);
-    splashListBg->addChild(splashListBorderTop);
-    splashListBg->addChild(splashListBorderDown);
-    splashListBg->addChild(splashListBorderLeft);
-    splashListBg->addChild(splashListBorderRight);
+    splashListBg->addChild(splashListBorders);
+    // splashListBg->addChild(splashListBorderTop);
+    // splashListBg->addChild(splashListBorderDown);
+    // splashListBg->addChild(splashListBorderLeft);
+    // splashListBg->addChild(splashListBorderRight);
     this->m_mainLayer->addChild(splashListBg);
 }
 

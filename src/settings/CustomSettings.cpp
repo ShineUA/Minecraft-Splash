@@ -1,6 +1,6 @@
 #include "CustomSettings.h"
 
-#include "../layers/SplashesListPopup.h"
+#include "../layers/ChooseLayer.h"
 
 extern int splashIndex;
 extern std::vector<std::vector<std::string>> default_splashes;
@@ -17,7 +17,7 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
     this->setContentSize({ width, 40.f });
     auto ccmenu = CCMenu::create();
     ButtonSprite* spr;
-    spr = ButtonSprite::create("Edit Splashes", "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png");
+    spr = ButtonSprite::create("Misc. Options", "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png");
     auto btn = CCMenuItemSpriteExtra::create(
         spr, this, menu_selector(ArrayListNode::createPopup)
     );
@@ -66,7 +66,7 @@ void ArrayListNode::resetToDefault() {
 }
 
 void ArrayListNode::createPopup(cocos2d::CCObject* sender) {
-    auto popup = SplashesListPopup::create(this);
+    auto popup = ChooseLayer::create(this);
     CCScene::get()->addChild(popup);
 }
 
