@@ -1,6 +1,7 @@
 #include "EditEntriesLayer.h"
 
 #include "../tools/Easings.h"
+#include "Geode/cocos/platform/CCPlatformMacros.h"
 #include "SplashesListPopup.h"
 
 EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int mode, SplashesListPopup* prev_popup) {
@@ -8,7 +9,7 @@ EditEntriesLayer* EditEntriesLayer::create(ArrayListNode* node, int index, int m
     if (ret && ret->initAnchored(435.f, 285.f, node, index, mode, prev_popup, Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_square01.png" : "GJ_square01.png")) {
         ret->autorelease();
     } else {
-        delete ret;
+        CC_SAFE_DELETE(ret);
         ret = nullptr;
     }
     return ret;

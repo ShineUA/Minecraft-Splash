@@ -1,4 +1,7 @@
 #include "./ChooseLayer.h"
+#include "EditEntriesLayer.h"
+#include "Geode/cocos/CCDirector.h"
+#include "Geode/cocos/layers_scenes_transitions_nodes/CCTransition.h"
 
 ChooseLayer* ChooseLayer::create(ArrayListNode* node) {
     auto ret = new ChooseLayer();
@@ -32,9 +35,13 @@ bool ChooseLayer::setup(ArrayListNode* node) {
 }
 
 void ChooseLayer::onSplashesOptionsBtn(CCObject* sender) {
+    this->keyBackClicked();
     CCScene::get()->addChild(SplashesListPopup::create(this->m_node));
 }
 
 void ChooseLayer::onEditAppearanceBtn(CCObject* sender) {
-
+    auto scene = CCScene::create();
+    scene->addChild(EditSplashAppearanceLayer::scene());
+    this->keyBackClicked();
+    CCDirector::sharedDirector()->pushScene(CCTransitionFade::create(0.5, scene));
 }

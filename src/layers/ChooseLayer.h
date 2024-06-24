@@ -1,7 +1,8 @@
 #pragma once
-#include <Geode/Geode.hpp>
+
 #include "../settings/CustomSettings.h"
 #include "./SplashesListPopup.h"
+#include "./EditSplashAppearanceLayer.h"
 
 using namespace geode::prelude;
 

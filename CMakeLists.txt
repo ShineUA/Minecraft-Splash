@@ -14,6 +14,7 @@ add_library(${PROJECT_NAME} SHARED
     src/layers/SplashesListPopup.cpp
     src/layers/EditEntriesLayer.cpp
     src/layers/ChooseLayer.cpp
+    src/layers/EditSplashAppearanceLayer.cpp
 )
 
 if (NOT DEFINED ENV{GEODE_SDK})
