@@ -33,8 +33,11 @@ bool EditSplashAppearanceLayer::init() {
     bg->setID("bg-1");
     bg->runAction(CCRepeatForever::create(CCSequence::create(
         CCTintTo::create(2.5, 255, 0, 255),
+        CCDelayTime::create(0.5),
         CCTintTo::create(2.5, 255, 255, 0),
+        CCDelayTime::create(0.5),
         CCTintTo::create(2.5, 0, 255, 255),
+        CCDelayTime::create(0.5),
         nullptr
     )));
     auto bg2 = CCSprite::create("game_bg_01_001.png");
@@ -43,8 +46,11 @@ bool EditSplashAppearanceLayer::init() {
     bg2->setID("bg-2");
     bg2->runAction(CCRepeatForever::create(CCSequence::create(
         CCTintTo::create(2.5, 255, 0, 255),
+        CCDelayTime::create(0.5),
         CCTintTo::create(2.5, 255, 255, 0),
+        CCDelayTime::create(0.5),
         CCTintTo::create(2.5, 0, 255, 255),
+        CCDelayTime::create(0.5),
         nullptr
     )));
     auto bg3 = CCSprite::create("game_bg_01_001.png");
@@ -53,8 +59,11 @@ bool EditSplashAppearanceLayer::init() {
     bg3->setID("bg-3");
     bg3->runAction(CCRepeatForever::create(CCSequence::create(
         CCTintTo::create(2.5, 255, 0, 255),
+        CCDelayTime::create(0.5),
         CCTintTo::create(2.5, 255, 255, 0),
+        CCDelayTime::create(0.5),
         CCTintTo::create(2.5, 0, 255, 255),
+        CCDelayTime::create(0.5),
         nullptr
     )));
     bg->runAction(CCSequence::create(
