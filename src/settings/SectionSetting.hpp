@@ -5,7 +5,7 @@ using namespace geode::prelude;
 
 
 // SECTIONS
-// Copied from Beat's CLick Sounds mod (get it now!)
+// Copied from Beat's Click Sounds mod (get it now!)
 
 class SectionSettingValue;
 
