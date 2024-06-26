@@ -62,7 +62,7 @@ class $modify(MenuLayer) {
 		}
 #endif
 		splash->setZOrder(15);
-		splash->setID("minecraft-splash");
+		splash->setID("minecraft-splash"_spr);
 		addChild(splash);
 		return true;
 	}

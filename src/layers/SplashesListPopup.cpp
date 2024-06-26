@@ -179,7 +179,7 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     this->m_startSize = splash_array.size();
     m_scrollLayer = ScrollLayer::create({scale_x, scale_y});
     this->m_isEven = ((splash_array.size() - 1) * 40.f > this->m_scrollLayer->getContentHeight()) ? splash_array.size() % 2 == 0 : true;
-    m_scrollLayer->setID("scroll-layer");
+    m_scrollLayer->setID("scroll-layer"_spr);
     float size = 40.f * splash_array.size();
     m_scrollLayer->m_contentLayer->changeHeight((size >= scale_y) ? size : std::ceil(scale_y / 40.f) * 40);
     m_scrollLayer->scrollToTop();
@@ -232,7 +232,7 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
     }
     auto splashListBg = CCLayerColor::create();
     splashListBg->setOpacity(75);
-    splashListBg->setID("list");
+    splashListBg->setID("list"_spr);
     splashListBg->setContentSize(ccp(scale_x, scale_y));
     splashListBg->setPosition({pos_x - scale_x / 2, pos_y - scale_y / 2});
     auto splashListBorders = ListBorders::create();
