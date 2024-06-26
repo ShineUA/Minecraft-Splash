@@ -93,11 +93,3 @@ bool EditSplashAppearanceLayer::init() {
     this->addChild(ground);
     return true;
 }
-
-void EditSplashAppearanceLayer::bgLoop(CCNode* node) {
-    node->runAction(CCRepeatForever::create(CCSequence::create(
-        CCMoveBy::create(0, {node->getContentWidth() * 3, 0}),
-        CCMoveBy::create(15 * 3, {-node->getContentWidth() * 3, 0}),
-        nullptr
-    )));
-}
