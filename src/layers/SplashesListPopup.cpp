@@ -9,7 +9,7 @@
 #include "Geode/utils/cocos.hpp"
 #include <string>
 
-extern std::vector<std::vector<std::string>> default_splashes;
+extern std::vector<std::string> default_splashes;
 
 SplashesListPopup* SplashesListPopup::create(ArrayListNode* node) {
     SplashesListPopup* ret = new SplashesListPopup();
@@ -86,7 +86,7 @@ void SplashesListPopup::deleteEntry(CCObject* sender) {
         "Yes", "No",
         [this, index](auto, bool btn2) {
             if(!btn2) {
-                std::vector<std::vector<std::string>> v = this->m_node->getValue();
+                std::vector<std::string> v = this->m_node->getValue();
                 size_t   size = v.size();
                 v.erase(v.begin() + index);
                 this->m_node->setValue(v);
@@ -188,7 +188,7 @@ void SplashesListPopup::setupSplashesList(float pos_x, float pos_y, float scale_
         itemMenu->setPosition({scale_x - 40, 40.f / 2.f});
         itemMenu->setContentWidth(73);
         itemMenu->setLayout(RowLayout::create()->setAutoScale(false), false);
-        auto splash = CCLabelBMFont::create(splash_array.at(i).at(0).c_str(), "bigFont.fnt");
+        auto splash = CCLabelBMFont::create(splash_array.at(i).c_str(), "bigFont.fnt");
         splash->setScale(0.5f);
         splash->setAnchorPoint({0.f, 0.5f});
         splash->setPosition({5.f, 20.f});
@@ -275,7 +275,7 @@ void SplashesListPopup::deleteAllSplashes(CCObject* sender) {
         "Yes", "No",
         [this](auto, bool btn2) {
             if(!btn2) {
-                std::vector<std::vector<std::string>> v = {{"Splash", "0.6"}};
+                std::vector<std::string> v = {"Splash"};
                 this->m_node->setValue(v);
                 this->m_node->dispatchChangedPublic();
                 this->updateSplashesList(offset.x, offset.y, 320, 225);

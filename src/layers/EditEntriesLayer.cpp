@@ -64,10 +64,10 @@ bool EditEntriesLayer::setup(ArrayListNode* node, int index, int mode, SplashesL
         this->m_buttonMenu->addChild(addBtn);
     } else if(mode == 1) {
         this->setTitle("Edit Splash", "goldFont.fnt", 1);
-        labelInput->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
-        scaleInput->setString(this->m_node->getValue().at(this->m_index).at(1).c_str());
-        this->m_previewLabel->setString(this->m_node->getValue().at(this->m_index).at(0).c_str());
-        this->m_previewLabel->setScale(std::stof(this->m_node->getValue().at(this->m_index).at(1).c_str()));
+        labelInput->setString(this->m_node->getValue().at(this->m_index).c_str());
+        //scaleInput->setString(this->m_node->getValue().at(this->m_index).at(1).c_str());
+        this->m_previewLabel->setString(this->m_node->getValue().at(this->m_index).c_str());
+        //this->m_previewLabel->setScale(std::stof(this->m_node->getValue().at(this->m_index).at(1).c_str()));
         auto editSpr = ButtonSprite::create("Edit", "goldFont.fnt", Loader::get()->getLoadedMod("geode.loader")->getSettingValue<bool>("enable-geode-theme") ? "geode.loader/GE_button_05.png" : "GJ_button_01.png");
         auto editBtn = CCMenuItemSpriteExtra::create(
             editSpr,
@@ -103,11 +103,8 @@ void EditEntriesLayer::addSplash(CCObject* sender) {
             "OK"
         )->show();
     }
-    std::vector<std::vector<std::string>> v = this->m_node->getValue();
-    std::vector<std::string> v_an;
-    v_an.push_back(splash);
-    v_an.push_back(scale);
-    v.push_back(v_an);
+    std::vector<std::string> v = this->m_node->getValue();
+    v.push_back(splash);
     this->m_node->setValue(v);
     auto itemMenu = CCMenu::create();
     itemMenu->setPosition({this->m_previousPopup->m_scrollLayer->getContentWidth() - 40, 40.f / 2.f});
@@ -208,11 +205,8 @@ void EditEntriesLayer::editSplash(CCObject* sender) {
             "OK"
         )->show();
     }
-    std::vector<std::vector<std::string>> v = this->m_node->getValue();
-    std::vector<std::string> v_an;
-    v_an.push_back(splash);
-    v_an.push_back(scale);
-    v.at(this->m_index) = v_an;
+    std::vector<std::string> v = this->m_node->getValue();
+    v.at(this->m_index) = splash;
     this->m_node->setValue(v);
     auto oldVisSplash = getChildOfType<CCLabelBMFont>(this->m_previousPopup->m_scrollLayer->m_contentLayer->getChildByID(std::to_string(this->m_index)), 0);
     auto newVisSplash = CCLabelBMFont::create(splash.c_str(), "bigFont.fnt");

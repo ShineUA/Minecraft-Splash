@@ -20,6 +20,7 @@ bool EditSplashAppearanceLayer::init() {
     this->setContentSize(CCDirector::sharedDirector()->getWinSize());
     this->setKeypadEnabled(true);
     this->setTouchEnabled(true);
+    this->m_menu->setPosition({0, 0});
     auto bg = CCSpriteBatchNode::create((GameManager::get()->m_loadedBgID < 10) ? fmt::format("game_bg_0{}_001.png", GameManager::get()->m_loadedBgID).c_str() : fmt::format("game_bg_{}_001.png", GameManager::get()->m_loadedBgID).c_str());
     auto bg_1 = CCSprite::create((GameManager::get()->m_loadedBgID < 10) ? fmt::format("game_bg_0{}_001.png", GameManager::get()->m_loadedBgID).c_str() : fmt::format("game_bg_{}_001.png", GameManager::get()->m_loadedBgID).c_str());
     bg_1->setScale(CCDirector::sharedDirector()->getWinSizeInPixels().width / bg_1->getTexture()->getContentSizeInPixels().width);
@@ -99,5 +100,30 @@ bool EditSplashAppearanceLayer::init() {
     }
     this->addChild(bg);
     this->addChild(ground);
+
+    auto exitBtnSpr = ButtonSprite::create("Return", "goldFont.fnt", "GJ_button_05.png");
+    auto exitBtn = CCMenuItemSpriteExtra::create(
+        exitBtnSpr,
+        this,
+        menu_selector(EditSplashAppearanceLayer::onReturn)
+    );
+    exitBtn->setPosition({offset.x + 57, offset.y + 135});
+    this->m_menu->addChild(exitBtn);
+    auto saveBtnSpr = ButtonSprite::create("Save");
+    auto saveBtn = CCMenuItemSpriteExtra::create(
+        saveBtnSpr,
+        this,
+        nullptr
+    );
+    saveBtn->setPosition({offset.x - 57, offset.y + 135});
+    this->m_menu->addChild(saveBtn);
+    auto editableNode = EditableSplashNode::create();
+
+    this->addChild(editableNode);
+    this->addChild(this->m_menu);
     return true;
+}
+
+void EditSplashAppearanceLayer::onReturn(CCObject* sender) {
+    this->keyBackClicked();
 }

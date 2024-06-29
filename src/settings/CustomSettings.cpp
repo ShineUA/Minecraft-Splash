@@ -3,7 +3,7 @@
 #include "../layers/ChooseLayer.h"
 
 extern int splashIndex;
-extern std::vector<std::vector<std::string>> default_splashes;
+extern std::vector<std::string> default_splashes;
 
 SettingNode* ArrayListValue::createNode(float width) {
     return ArrayListNode::create(this, width);
@@ -31,7 +31,7 @@ bool ArrayListNode::init(ArrayListValue* value, float width) {
 
 void ArrayListNode::commit() {
     static_cast<ArrayListValue*>(m_value)->setArray(this->getValue());
-    Mod::get()->setSavedValue<std::vector<std::vector<std::string>>>("splashes-vector", static_cast<ArrayListValue*>(m_value)->getArray());
+    Mod::get()->setSavedValue<std::vector<std::string>>("splashes-vector", static_cast<ArrayListValue*>(m_value)->getArray());
     if(static_cast<ArrayListValue*>(m_value)->getArray().size() == 1) {
         splashIndex = 0;
     } else {
@@ -51,11 +51,11 @@ bool ArrayListNode::hasNonDefaultValue() {
     return m_unsavedArray != default_splashes;
 }
 
-std::vector<std::vector<std::string>> ArrayListNode::getValue() {
+std::vector<std::string> ArrayListNode::getValue() {
     return this->m_unsavedArray;
 }
 
-void ArrayListNode::setValue(std::vector<std::vector<std::string>> value) {
+void ArrayListNode::setValue(std::vector<std::string> value) {
     this->m_unsavedArray.clear();
     this->m_unsavedArray.assign(value.begin(), value.end());
 }
